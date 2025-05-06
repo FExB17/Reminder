@@ -18,16 +18,17 @@ public class MailGuiApp {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
 
+        //TODO muss noch verstanden werden
         // Holder für listPanel (Zirkelschluss lösen)
         final ReminderListPanel[] listPanelHolder = new ReminderListPanel[1];
 
         // Eingabeformular mit Callback
         ReminderFormPanel formPanel = new ReminderFormPanel(mailData -> {
             Reminder reminder = new Reminder(
-                    mailData.to,
-                    mailData.subject,
-                    mailData.body,
-                    mailData.interval,
+                    mailData.to(),
+                    mailData.subject(),
+                    mailData.body(),
+                    mailData.interval(),
                     Status.ACTIVE
             );
 
@@ -36,7 +37,6 @@ public class MailGuiApp {
             MailScheduler.startScheduledMailing(reminder.getId(), reminder.getInterval(), () -> mailData);
         });
 
-        // Reminder-Liste, jetzt ist formPanel bekannt
         ReminderListPanel listPanel = new ReminderListPanel(formPanel);
         listPanelHolder[0] = listPanel;
 

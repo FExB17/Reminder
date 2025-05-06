@@ -21,7 +21,7 @@ public class MailScheduler {
         Runnable command = () -> {
             MailData data = dataSupplier.get();
 
-            String result = MailSender.sendMail(data.to, data.subject, data.body);
+            String result = MailSender.sendMail(data.to(), data.subject(), data.body());
         };
 
         scheduler.scheduleAtFixedRate(command, 0, intervalMinutes, TimeUnit.MINUTES);
