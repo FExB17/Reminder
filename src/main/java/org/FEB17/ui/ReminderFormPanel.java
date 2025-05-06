@@ -69,9 +69,9 @@ public class ReminderFormPanel extends JPanel {
 
         sendBtn.addActionListener(e -> {
             boolean valid = true;
-            valid &= (!FieldValidator.validateField(mailTo,errorRecipient));
-            valid &= (!FieldValidator.validateField(subject,errorSubject));
-            valid &= (!FieldValidator.validateField(messageArea,errorMessage));
+            if((!FieldValidator.validateField(mailTo,errorRecipient))) valid = false;
+            if((!FieldValidator.validateField(subject,errorSubject)))valid = false;
+            if ((!FieldValidator.validateField(messageArea,errorMessage)))valid = false;
             if (!FieldValidator.isValidEmail(mailTo.getText())){
                 errorRecipient.setText("Invalid e-mail address format.");
                 valid = false;
