@@ -33,9 +33,14 @@ public class MailGuiApp {
             );
 
             reminderManager.addReminder(reminder);
-            listPanelHolder[0].addReminder(reminder);  // Zugriff auf später initialisiertes Panel
+            listPanelHolder[0].addReminder(reminder);
             MailScheduler.startScheduledMailing(reminder.getId(), reminder.getInterval(), () -> mailData);
-        });
+        },
+                // methoden referenz -> wird ausgeführt wenn der Button gedrückt wird
+                // der normale aufruf würde sofort ausgeführt werden
+                //TODO wieso ist hier ein callback
+                MailScheduler::stopAll
+        );
 
         ReminderListPanel listPanel = new ReminderListPanel(formPanel);
         listPanelHolder[0] = listPanel;

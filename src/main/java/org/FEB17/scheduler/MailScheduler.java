@@ -3,6 +3,7 @@ package org.FEB17.scheduler;
 import org.FEB17.mail.MailData;
 import org.FEB17.mail.MailSender;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class MailScheduler {
         }
     }
     public static void stopAll() {
-        for (UUID id : schedulerMap.keySet()) {
+        for (UUID id : new ArrayList<>(schedulerMap.keySet())) {
             stop(id);
         }
     }
