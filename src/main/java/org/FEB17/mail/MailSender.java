@@ -1,3 +1,8 @@
+/**
+ * deprecated
+ sends mail by reading everything from config.properties
+ */
+
 package org.FEB17.mail;
 
 import org.FEB17.utils.ConfigReader;
@@ -11,7 +16,6 @@ import java.util.logging.Logger;
 public class MailSender {
     private static final Logger logger  = Logger.getLogger(MailSender.class.getName());
 
-    // sends mail by reading everything from config.properties
     public static void sendMail(){
         ConfigReader config = new ConfigReader();
 

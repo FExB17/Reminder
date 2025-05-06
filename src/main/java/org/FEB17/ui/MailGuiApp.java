@@ -1,17 +1,11 @@
 package org.FEB17.ui;
 
-import org.FEB17.mail.MailData;
 import org.FEB17.manager.ReminderManager;
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
 import org.FEB17.scheduler.MailScheduler;
-import org.FEB17.utils.FieldValidator;
-import org.FEB17.utils.Gui;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.function.Supplier;
-
 
 public class MailGuiApp {
 
@@ -24,30 +18,31 @@ public class MailGuiApp {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
 
-        // Rechtes Panel (Reminder-Liste)
-        ReminderListPanel listPanel = new ReminderListPanel();
+        // Holder für listPanel (Zirkelschluss lösen)
+        final ReminderListPanel[] listPanelHolder = new ReminderListPanel[1];
 
-        // Linkes Panel (Eingabeform) mit Callback
+        // Eingabeformular mit Callback
         ReminderFormPanel formPanel = new ReminderFormPanel(mailData -> {
-            // Reminder erzeugen
             Reminder reminder = new Reminder(
                     mailData.to,
                     mailData.subject,
-                    5, // Placeholder → später durch formPanel.getInterval()
+                    mailData.body,
+                    mailData.interval,
                     Status.ACTIVE
             );
 
-            // Speichern + anzeigen
             reminderManager.addReminder(reminder);
-            listPanel.addReminder(reminder);
-
-            // Starten
-            MailScheduler.startScheduledMailing(reminder.getInterval(), () -> mailData);
+            listPanelHolder[0].addReminder(reminder);  // Zugriff auf später initialisiertes Panel
+            MailScheduler.startScheduledMailing(reminder.getId(), reminder.getInterval(), () -> mailData);
         });
 
-        // Split Layout
+        // Reminder-Liste, jetzt ist formPanel bekannt
+        ReminderListPanel listPanel = new ReminderListPanel(formPanel);
+        listPanelHolder[0] = listPanel;
+
+        // Layout zusammenbauen
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);
-        splitPane.setDividerLocation(300); // Linke Seite: 300px
+        splitPane.setDividerLocation(300);
         frame.add(splitPane);
 
         frame.setVisible(true);

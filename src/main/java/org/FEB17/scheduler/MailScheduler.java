@@ -3,6 +3,9 @@ package org.FEB17.scheduler;
 import org.FEB17.mail.MailData;
 import org.FEB17.mail.MailSender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -11,28 +14,34 @@ import java.util.logging.Logger;
 
 public class MailScheduler {
     private static final Logger logger = Logger.getLogger(MailScheduler.class.getName());
+    private static final Map<UUID,ScheduledExecutorService> schedulerMap = new HashMap<>();
 
-    // läuft parallel und im Hintergrund
-    static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-
-    // sendet die Nachricht in einem angegebenen Intervall
-    public static void startScheduledMailing(long intervalMinutes, Supplier<MailData> dataSupplier) {
+    public static void startScheduledMailing(UUID id, long intervalMinutes, Supplier<MailData> dataSupplier) {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         Runnable command = () -> {
             MailData data = dataSupplier.get();
-            //TODO result sollte von der MailGuiApp benutzt werden weil sonst auch bei fehlern continuous reminder started steht
+
             String result = MailSender.sendMail(data.to, data.subject, data.body);
         };
-        if (scheduledExecutorService == null || scheduledExecutorService.isShutdown()){
-            scheduledExecutorService = Executors.newScheduledThreadPool(1);
-        }
-        scheduledExecutorService.scheduleAtFixedRate(command, 0, intervalMinutes, TimeUnit.MINUTES);
+
+        scheduler.scheduleAtFixedRate(command, 0, intervalMinutes, TimeUnit.MINUTES);
+        schedulerMap.put(id,scheduler);
+
         logger.fine("Reminder started with intervall: "+ intervalMinutes + " minutes");
     }
 
-    public static void stop() {
-        if (scheduledExecutorService != null ) {
-            scheduledExecutorService.shutdown();
+    public static void stop(UUID id) {
+        ScheduledExecutorService scheduler = schedulerMap.get(id);
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdown();
+            schedulerMap.remove(id);
             System.out.println("Scheduler stopped");
         }
     }
+    public static void stopAll() {
+        for (UUID id : schedulerMap.keySet()) {
+            stop(id);
+        }
+    }
+
 }

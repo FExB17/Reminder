@@ -1,10 +1,10 @@
 package org.FEB17.ui;
 
 import org.FEB17.mail.MailData;
+import org.FEB17.models.Reminder;
 import org.FEB17.utils.FieldValidator;
 import org.FEB17.utils.Gui;
 
-import javax.mail.internet.InternetAddress;
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
@@ -64,16 +64,15 @@ public class ReminderFormPanel extends JPanel {
         this.add(btnPanel);
 
         // Statusanzeige
-        //TODO muss womöglich noch weg sollte links unter den einzelnen remindern sein
         statusLabel = new JLabel();
         this.add(statusLabel);
 
         sendBtn.addActionListener(e -> {
             boolean valid = true;
-            if(!FieldValidator.validateField(mailTo,errorRecipient)) valid = false;
-            if(!FieldValidator.validateField(mailTo,errorSubject)) valid = false;
-            if(!FieldValidator.validateField(mailTo,errorMessage)) valid = false;
-            if(!FieldValidator.isValidEmail(mailTo.getText())){
+            valid &= (!FieldValidator.validateField(mailTo,errorRecipient));
+            valid &= (!FieldValidator.validateField(subject,errorSubject));
+            valid &= (!FieldValidator.validateField(messageArea,errorMessage));
+            if (!FieldValidator.isValidEmail(mailTo.getText())){
                 errorRecipient.setText("Invalid e-mail address format.");
                 valid = false;
             }
@@ -82,7 +81,9 @@ public class ReminderFormPanel extends JPanel {
             MailData data = new MailData(
                     mailTo.getText(),
                     subject.getText(),
-                    messageArea.getText()
+                    messageArea.getText(),
+                    // nicht direkt intervalSpinner weil der ein Objekt zurück gibt und kein int wie in MailData verlangt deshalb die hilfsmethode getInterval()
+                    getInterval()
             );
 
             onReminderCreated.accept(data);
@@ -92,5 +93,11 @@ public class ReminderFormPanel extends JPanel {
     }
     public int getInterval(){
         return (int) intervalSpinner.getValue();
+    }
+    public void fillForm(Reminder reminder){
+        mailTo.setText(reminder.getRecipient());
+        subject.setText(reminder.getSubject());
+        messageArea.setText(reminder.getBody());
+        intervalSpinner.setValue(reminder.getInterval());
     }
 }

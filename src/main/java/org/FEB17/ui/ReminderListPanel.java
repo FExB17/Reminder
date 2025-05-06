@@ -7,13 +7,18 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 public class ReminderListPanel extends JPanel {
 
     private final JPanel listContainer;
     private final List<ReminderBoxPanel> reminderBoxes;
+    private final ReminderFormPanel formPanel;
 
 
-    public ReminderListPanel() {
+    public ReminderListPanel(ReminderFormPanel formPanel) {
+        this.formPanel = formPanel;
         this.setLayout(new BorderLayout());
         listContainer = new JPanel();
         // im konstruktor nochmal listContainer, weil BoxLayout speziell ist und separat erst auch den Container braucht auf, dass es abgestimmt werden soll
@@ -26,7 +31,7 @@ public class ReminderListPanel extends JPanel {
     }
 
     public void addReminder(Reminder reminder) {
-        ReminderBoxPanel box = new ReminderBoxPanel(reminder);
+        ReminderBoxPanel box = new ReminderBoxPanel(reminder,formPanel);
         reminderBoxes.add(box);
         listContainer.add(box);
         listContainer.revalidate();
