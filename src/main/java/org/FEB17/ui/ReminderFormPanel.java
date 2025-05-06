@@ -18,7 +18,7 @@ public class ReminderFormPanel extends JPanel {
     private final JLabel errorRecipient, errorSubject, errorMessage;
     private final JLabel statusLabel;
 
-    public ReminderFormPanel (Consumer<MailData> onReminderCreated){
+    public ReminderFormPanel (Consumer<MailData> onReminderCreated, Runnable onStopAll){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 
@@ -91,6 +91,10 @@ public class ReminderFormPanel extends JPanel {
 
             onReminderCreated.accept(data);
             statusLabel.setText("Reminder created. Every " + intervalSpinner.getValue() + "minutes");
+        });
+        stopAllBtn.addActionListener(e -> {
+            onStopAll.run();
+            statusLabel.setText("All reminders stopped.");
         });
 
     }
