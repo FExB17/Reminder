@@ -59,8 +59,11 @@ public class ReminderFormPanel extends JPanel {
 
         //Buttons
         JButton sendBtn = new JButton("Send");
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel btnPanel = new JPanel();
+        btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.Y_AXIS));
+        JButton stopAllBtn = new JButton("Stop All");
         btnPanel.add(sendBtn);
+        btnPanel.add(stopAllBtn);
         this.add(btnPanel);
 
         // Statusanzeige
