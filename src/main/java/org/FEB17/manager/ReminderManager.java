@@ -3,13 +3,10 @@ package org.FEB17.manager;
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ReminderManager {
-    private Map<UUID, Reminder> remindersMap;
+    private Map<UUID, Reminder> remindersMap = new HashMap<>();
 
     List<Reminder> reminderList = new ArrayList<>();
 

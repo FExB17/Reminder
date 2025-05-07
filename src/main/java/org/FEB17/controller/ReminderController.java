@@ -4,6 +4,7 @@ import org.FEB17.mail.MailData;
 import org.FEB17.manager.ReminderManager;
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
+import org.FEB17.scheduler.MailScheduler;
 import org.FEB17.ui.ReminderBoxPanel;
 import org.FEB17.ui.ReminderFormPanel;
 import org.FEB17.ui.ReminderListPanel;
@@ -25,19 +26,25 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     this.reminderViews = new HashMap<>();
 }
 
- public void  toggleReminder(UUID id){
+    public void toggleReminder(UUID id) {
+        Reminder reminder = reminderManager.getReminder(id);
+        if (reminder == null) return;
 
-//Reminder vom Manager holt
-Reminder reminder = reminderManager.getReminder(id);
-if(reminder == null) return;
-
-
-if(reminder.getStatus() == Status.ACTIVE ){
-    reminderManager.stopReminder(id);
-    updateViewToStopped(id);
-}
-
- }
+        if (reminder.getStatus() == Status.ACTIVE) {
+            reminderManager.stopReminder(id);
+            MailScheduler.stop(id); // <--- NEU
+            updateViewToStopped(id);
+        } else {
+            reminderManager.startReminder(id);
+            MailScheduler.startScheduledMailing(id, reminder.getInterval(), () -> new MailData(
+                    reminder.getRecipient(),
+                    reminder.getSubject(),
+                    reminder.getBody(),
+                    reminder.getInterval()
+            ));
+            updateViewToActive(id);
+        }
+    }
 
  public void updateViewToActive(UUID id){
     ReminderBoxPanel panel = reminderViews.get(id);
@@ -55,12 +62,20 @@ if(reminder.getStatus() == Status.ACTIVE ){
 
  public void createReminder(MailData mailData, int interval){
      Reminder reminder = new Reminder(mailData, interval);
+     reminder.setStatus(Status.ACTIVE);
      reminderManager.addReminder(reminder);
+
 
      ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this); // ggf. anpassen
      reminderListPanel.addReminderBox(panel);
      reminderViews.put(reminder.getId(), panel);
+     MailScheduler.startScheduledMailing(
+             reminder.getId(),
+             reminder.getInterval(),
+             () -> mailData
+     );
  }
+
     public void fillForm(UUID id) {
         Reminder reminder = reminderManager.getReminder(id);
         if (reminder != null) {
@@ -68,12 +83,11 @@ if(reminder.getStatus() == Status.ACTIVE ){
         }
     }
     public void stopAllReminders() {
-        // 1. ReminderManager: Reminder stoppen
         for (Reminder reminder : reminderManager.getAllReminder()) {
             reminder.setStatus(Status.STOPPED);
+            MailScheduler.stop(reminder.getId()); // <--- NEU
         }
 
-        // 2. GUI: Alle ReminderBoxPanels aktualisieren
         for (UUID id : reminderViews.keySet()) {
             updateViewToStopped(id);
         }

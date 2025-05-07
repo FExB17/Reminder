@@ -14,9 +14,11 @@ public class Reminder {
 
     public Reminder(MailData data, int interval) {
         this.id = UUID.randomUUID();
-        this.data = data;
+        this.recipient = data.to();
+        this.subject = data.subject();
+        this.body = data.body();
         this.interval = interval;
-        this.status = Status.STOPPED; // oder wie auch immer dein Startstatus ist
+        this.status = Status.STOPPED;
     }
 
     public String getRecipient() {

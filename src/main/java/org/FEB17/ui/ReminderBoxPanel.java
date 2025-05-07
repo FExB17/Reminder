@@ -84,7 +84,7 @@ public class ReminderBoxPanel extends JPanel {
         );
     }
     public void updateToActive() {
-        statusLabel.setText("Running");
+        statusLabel.setText("Active");
         actionBtn.setText("Stop");
     }
 
