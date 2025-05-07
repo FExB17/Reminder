@@ -1,5 +1,7 @@
 package org.FEB17.models;
 
+import org.FEB17.mail.MailData;
+
 import java.util.UUID;
 
 public class Reminder {
@@ -8,14 +10,13 @@ public class Reminder {
     private int interval;
     private Status status;
     private final UUID id;
+    private MailData data;
 
-    public Reminder(String recipient, String subject, String body, int interval, Status status) {
-        this.recipient = recipient;
-        this.subject = subject;
-        this.body = body;
-        this.interval = interval;
-        this.status = status;
+    public Reminder(MailData data, int interval) {
         this.id = UUID.randomUUID();
+        this.data = data;
+        this.interval = interval;
+        this.status = Status.STOPPED; // oder wie auch immer dein Startstatus ist
     }
 
     public String getRecipient() {

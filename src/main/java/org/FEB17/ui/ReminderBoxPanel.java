@@ -1,6 +1,6 @@
 package org.FEB17.ui;
 
-import org.FEB17.mail.MailData;
+import org.FEB17.controller.ReminderController;
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
 import org.FEB17.scheduler.MailScheduler;
@@ -10,22 +10,24 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * schnittstelle zwischen daten und gui
- * Behälter für die Reminder
- */
 public class ReminderBoxPanel extends JPanel {
 
     private final Reminder reminder;
+    private JLabel statusLabel;
     private final JButton deleteBtn;
     private final JButton actionBtn;
     private final JTextArea infoArea;
+    private ReminderController controller;
 
-    public ReminderBoxPanel (Reminder reminder, ReminderFormPanel formPanel){
+    public ReminderBoxPanel (Reminder reminder, ReminderController controller) {
         this.reminder = reminder;
+        this.controller = controller;
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100)); // feste Höhe, volle Breite
+
+        statusLabel = new JLabel(reminder.getStatus().name());
+        this.add(statusLabel, BorderLayout.NORTH);
 
         infoArea = new JTextArea();
         infoArea.setEditable(false);
@@ -42,7 +44,7 @@ public class ReminderBoxPanel extends JPanel {
         infoArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
-                formPanel.fillForm(reminder);
+                controller.fillForm(reminder.getId());
             }
         });
 
@@ -50,23 +52,7 @@ public class ReminderBoxPanel extends JPanel {
         actionBtn = new JButton(reminder.getStatus() == Status.ACTIVE ? "Stop" : "Start");
         deleteBtn = new JButton("Delete");
 
-        actionBtn.addActionListener(e -> {
-            if(reminder.getStatus() == Status.ACTIVE){
-                MailScheduler.stop(reminder.getId());
-                reminder.setStatus(Status.STOPPED);
-                actionBtn.setText("Start");
-                updateDisplay();
-            }
-            else{
-                MailScheduler.startScheduledMailing(
-                        reminder.getId(),
-                        reminder.getInterval(),
-                        () -> new MailData(reminder.getRecipient(), reminder.getSubject(),reminder.getBody(), reminder.getInterval()));
-                reminder.setStatus(Status.ACTIVE);
-                actionBtn.setText("Stop");
-                updateDisplay();
-            }
-        });
+        actionBtn.addActionListener(e -> controller.toggleReminder(reminder.getId()));
 
         deleteBtn.addActionListener(e -> {
             MailScheduler.stop(reminder.getId());
@@ -96,6 +82,15 @@ public class ReminderBoxPanel extends JPanel {
                         "Interval: " + reminder.getInterval() + " min\n" +
                         "Status: " + reminder.getStatus()
         );
+    }
+    public void updateToActive() {
+        statusLabel.setText("Running");
+        actionBtn.setText("Stop");
+    }
+
+    public void updateToStopped() {
+        statusLabel.setText("Stopped");
+        actionBtn.setText("Start");
     }
 
 }

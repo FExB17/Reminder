@@ -1,15 +1,11 @@
 package org.FEB17.ui;
 
+import org.FEB17.controller.ReminderController;
 import org.FEB17.manager.ReminderManager;
-import org.FEB17.models.Reminder;
-import org.FEB17.models.Status;
-import org.FEB17.scheduler.MailScheduler;
 
 import javax.swing.*;
 
 public class MailGuiApp {
-
-    private static final ReminderManager reminderManager = new ReminderManager();
 
     public static void start() {
         JFrame frame = new JFrame("Reminder");
@@ -18,32 +14,19 @@ public class MailGuiApp {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
 
-        //TODO muss noch verstanden werden
-        // Holder für listPanel (Zirkelschluss lösen)
-        final ReminderListPanel[] listPanelHolder = new ReminderListPanel[1];
+        // Reminder-Logik-Komponente
+        ReminderManager reminderManager = new ReminderManager();
 
-        // Eingabeformular mit Callback
-        ReminderFormPanel formPanel = new ReminderFormPanel(mailData -> {
-            Reminder reminder = new Reminder(
-                    mailData.to(),
-                    mailData.subject(),
-                    mailData.body(),
-                    mailData.interval(),
-                    Status.ACTIVE
-            );
+        // GUI-Komponenten erzeugen (ohne Callbacks!)
+        ReminderFormPanel formPanel = new ReminderFormPanel();
+        ReminderListPanel listPanel = new ReminderListPanel();
 
-            reminderManager.addReminder(reminder);
-            listPanelHolder[0].addReminder(reminder);
-            MailScheduler.startScheduledMailing(reminder.getId(), reminder.getInterval(), () -> mailData);
-        },
-                // methoden referenz -> wird ausgeführt wenn der Button gedrückt wird
-                // der normale aufruf würde sofort ausgeführt werden
-                //TODO wieso ist hier ein callback
-                MailScheduler::stopAll
-        );
+        // Controller erzeugen (zentrale Steuerung der App)
+        ReminderController controller = new ReminderController(reminderManager, listPanel, formPanel);
 
-        ReminderListPanel listPanel = new ReminderListPanel(formPanel);
-        listPanelHolder[0] = listPanel;
+        // Controller an die GUI-Komponenten übergeben
+        formPanel.setController(controller);
+        listPanel.setController(controller);
 
         // Layout zusammenbauen
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);
