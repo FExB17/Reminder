@@ -9,19 +9,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+//  furkanervan@hotmail.de
 public class ReminderBoxPanel extends JPanel {
 
     private final Reminder reminder;
-    private JLabel statusLabel;
+    private final JLabel statusLabel;
     private final JButton deleteBtn;
     private final JButton actionBtn;
     private final JTextArea infoArea;
-    private ReminderController controller;
 
-    public ReminderBoxPanel (Reminder reminder, ReminderController controller) {
+    public ReminderBoxPanel (Reminder reminder, final ReminderController controller) {
         this.reminder = reminder;
-        this.controller = controller;
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100)); // feste Höhe, volle Breite
@@ -52,11 +50,14 @@ public class ReminderBoxPanel extends JPanel {
         actionBtn = new JButton(reminder.getStatus() == Status.ACTIVE ? "Stop" : "Start");
         deleteBtn = new JButton("Delete");
 
+        //TODO wie funktioniert das mit dem controller und woher weiss ich wasnn ein konstruktor auch mein controller annehmen muss und was der konstruktor vom controller als parameter nehmen muss und als felder
+
         actionBtn.addActionListener(e -> controller.toggleReminder(reminder.getId()));
 
         deleteBtn.addActionListener(e -> {
-            MailScheduler.stop(reminder.getId());
+            controller.deleteReminder(reminder.getId());
 
+            //TODO was ist das hier?
             Container parent = this.getParent();
             if (parent != null) {
                 parent.remove(this);
@@ -72,9 +73,8 @@ public class ReminderBoxPanel extends JPanel {
         this.add(btnPanel,BorderLayout.SOUTH);
 
     }
-    public Reminder getReminder(){
-        return reminder;
-    }
+
+    // später benötigt, falls der manager ausgeweitet wird
     private void updateDisplay() {
         infoArea.setText(
                 "To: " + reminder.getRecipient() + "\n" +

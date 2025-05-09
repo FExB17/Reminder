@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ReminderController {
-    private ReminderManager reminderManager;
-    private ReminderListPanel reminderListPanel;
-    private Map<UUID, ReminderBoxPanel> reminderViews;
-    private ReminderFormPanel formPanel;
+    private final ReminderManager reminderManager;
+    private final ReminderListPanel reminderListPanel;
+    private final Map<UUID, ReminderBoxPanel> reminderViews;
+    private final ReminderFormPanel formPanel;
 
 public ReminderController(ReminderManager manager, ReminderListPanel listPanel, ReminderFormPanel formPanel) {
     this.reminderManager = manager;
@@ -32,7 +32,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
 
         if (reminder.getStatus() == Status.ACTIVE) {
             reminderManager.stopReminder(id);
-            MailScheduler.stop(id); // <--- NEU
+            MailScheduler.stop(id);
             updateViewToStopped(id);
         } else {
             reminderManager.startReminder(id);
@@ -66,7 +66,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
      reminderManager.addReminder(reminder);
 
 
-     ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this); // ggf. anpassen
+     ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this);
      reminderListPanel.addReminderBox(panel);
      reminderViews.put(reminder.getId(), panel);
      MailScheduler.startScheduledMailing(
@@ -85,11 +85,19 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     public void stopAllReminders() {
         for (Reminder reminder : reminderManager.getAllReminder()) {
             reminder.setStatus(Status.STOPPED);
-            MailScheduler.stop(reminder.getId()); // <--- NEU
+            MailScheduler.stop(reminder.getId());
         }
 
         for (UUID id : reminderViews.keySet()) {
             updateViewToStopped(id);
+        }
+    }
+    public void deleteReminder(UUID id){
+    reminderManager.removeReminder(id);
+    MailScheduler.stop(id);
+    ReminderBoxPanel panel = reminderViews.remove(id);
+        if (panel != null) {
+            reminderListPanel.removeBox(panel);
         }
     }
 

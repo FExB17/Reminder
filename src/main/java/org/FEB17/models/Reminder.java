@@ -10,7 +10,6 @@ public class Reminder {
     private int interval;
     private Status status;
     private final UUID id;
-    private MailData data;
 
     public Reminder(MailData data, int interval) {
         this.id = UUID.randomUUID();

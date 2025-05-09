@@ -2,6 +2,7 @@ package org.FEB17.ui;
 
 import org.FEB17.controller.ReminderController;
 import org.FEB17.manager.ReminderManager;
+import org.FEB17.models.Reminder;
 
 import javax.swing.*;
 
@@ -14,21 +15,13 @@ public class MailGuiApp {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
 
-        // Reminder-Logik-Komponente
-        ReminderManager reminderManager = new ReminderManager();
-
-        // GUI-Komponenten erzeugen (ohne Callbacks!)
-        ReminderFormPanel formPanel = new ReminderFormPanel();
+        ReminderController[] holder = new ReminderController[1];
+        ReminderManager manager = new ReminderManager();
+        ReminderFormPanel formPanel = new ReminderFormPanel(() -> holder[0]);
         ReminderListPanel listPanel = new ReminderListPanel();
+        holder[0] = new ReminderController(manager, listPanel, formPanel);
 
-        // Controller erzeugen (zentrale Steuerung der App)
-        ReminderController controller = new ReminderController(reminderManager, listPanel, formPanel);
 
-        // Controller an die GUI-Komponenten übergeben
-        formPanel.setController(controller);
-        listPanel.setController(controller);
-
-        // Layout zusammenbauen
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);
         splitPane.setDividerLocation(300);
         frame.add(splitPane);

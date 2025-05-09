@@ -6,21 +6,20 @@ import org.FEB17.models.Status;
 import java.util.*;
 
 public class ReminderManager {
-    private Map<UUID, Reminder> remindersMap = new HashMap<>();
 
-    List<Reminder> reminderList = new ArrayList<>();
+    private Map<UUID, Reminder> remindersMap = new HashMap<>();
 
 
     public void addReminder(Reminder reminder){
-        reminderList.add(reminder);
         remindersMap.put(reminder.getId(), reminder);
     }
-    public void removeReminder(Reminder reminder){
-        reminderList.remove(reminder);
+
+    public void removeReminder(UUID id){
+        remindersMap.remove(id);
     }
 
-    public List<Reminder> getAllReminder(){
-        return reminderList;
+    public Collection<Reminder> getAllReminder(){
+        return remindersMap.values();
     }
     public Reminder getReminder(UUID id){
        return remindersMap.get(id);
@@ -30,7 +29,6 @@ public class ReminderManager {
         if(r != null){
             r.setStatus(Status.STOPPED);
         }
-
     }
 
     public void startReminder(UUID id){

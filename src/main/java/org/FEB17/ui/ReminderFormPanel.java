@@ -8,6 +8,7 @@ import org.FEB17.utils.Gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Supplier;
 
 public class ReminderFormPanel extends JPanel {
 
@@ -17,9 +18,8 @@ public class ReminderFormPanel extends JPanel {
     private final JSpinner intervalSpinner;
     private final JLabel errorRecipient, errorSubject, errorMessage;
     private final JLabel statusLabel;
-    private ReminderController controller;
 
-    public ReminderFormPanel() {
+    public ReminderFormPanel(Supplier<ReminderController> controllerSupplier) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Recipient
@@ -69,7 +69,7 @@ public class ReminderFormPanel extends JPanel {
         statusLabel = new JLabel();
         this.add(statusLabel);
 
-        // --- Button: Reminder senden ---
+
         sendBtn.addActionListener(e -> {
             boolean valid = true;
             if (!FieldValidator.validateField(mailTo, errorRecipient)) valid = false;
@@ -89,19 +89,15 @@ public class ReminderFormPanel extends JPanel {
                     getInterval()
             );
 
-            controller.createReminder(data, getInterval());
+            controllerSupplier.get().createReminder(data, getInterval());
             statusLabel.setText("Reminder created. Every " + getInterval() + " minutes.");
         });
 
-        // --- Button: Alle stoppen ---
+
         stopAllBtn.addActionListener(e -> {
-            controller.stopAllReminders();
+            controllerSupplier.get().stopAllReminders();
             statusLabel.setText("All reminders stopped.");
         });
-    }
-
-    public void setController(ReminderController controller) {
-        this.controller = controller;
     }
 
     public int getInterval() {
