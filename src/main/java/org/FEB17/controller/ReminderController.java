@@ -46,7 +46,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
         }
     }
 
- public void updateViewToActive(UUID id){
+    public void updateViewToActive(UUID id){
     ReminderBoxPanel panel = reminderViews.get(id);
     if(panel != null){
         panel.updateToActive();
@@ -60,7 +60,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
         }
     }
 
- public void createReminder(MailData mailData, int interval){
+    public void createReminder(MailData mailData, int interval){
      Reminder reminder = new Reminder(mailData, interval);
      reminder.setStatus(Status.ACTIVE);
      reminderManager.addReminder(reminder);
@@ -98,6 +98,30 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     ReminderBoxPanel panel = reminderViews.remove(id);
         if (panel != null) {
             reminderListPanel.removeBox(panel);
+        }
+    }
+
+    public void renderAllReminders() {
+        reminderManager.getAllReminder().forEach(reminder ->{
+            ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
+            reminderListPanel.addReminderBox(reminderBoxPanel);
+            reminderViews.put(reminder.getId(), reminderBoxPanel);
+            startSchedulerIfActive(reminder);
+        });
+    }
+
+    public void startSchedulerIfActive(Reminder reminder){
+        if (reminder.getStatus() == Status.ACTIVE) {
+            MailScheduler.startScheduledMailing(
+                    reminder.getId(),
+                    reminder.getInterval(),
+                    () -> new MailData(
+                            reminder.getRecipient(),
+                            reminder.getSubject(),
+                            reminder.getBody(),
+                            reminder.getInterval()
+                    )
+            );
         }
     }
 

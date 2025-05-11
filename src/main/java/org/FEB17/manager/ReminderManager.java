@@ -2,6 +2,7 @@ package org.FEB17.manager;
 
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
+import org.FEB17.persistence.ReminderStorage;
 
 import java.util.*;
 
@@ -12,6 +13,7 @@ public class ReminderManager {
 
     public void addReminder(Reminder reminder){
         remindersMap.put(reminder.getId(), reminder);
+
     }
 
     public void removeReminder(UUID id){
@@ -38,4 +40,10 @@ public class ReminderManager {
         }
     }
 
+    public void loadFromDisk (){
+        List<Reminder>reminders = ReminderStorage.loadReminders();
+        for (Reminder reminder : reminders) {
+            this.remindersMap.put(reminder.getId(),reminder);
+        }
+    }
 }

@@ -3,7 +3,6 @@ package org.FEB17.ui;
 import org.FEB17.controller.ReminderController;
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
-import org.FEB17.scheduler.MailScheduler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +13,12 @@ public class ReminderBoxPanel extends JPanel {
 
     private final Reminder reminder;
     private final JLabel statusLabel;
-    private final JButton deleteBtn;
+
     private final JButton actionBtn;
     private final JTextArea infoArea;
 
     public ReminderBoxPanel (Reminder reminder, final ReminderController controller) {
+        final JButton deleteBtn;
         this.reminder = reminder;
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -50,14 +50,12 @@ public class ReminderBoxPanel extends JPanel {
         actionBtn = new JButton(reminder.getStatus() == Status.ACTIVE ? "Stop" : "Start");
         deleteBtn = new JButton("Delete");
 
-        //TODO wie funktioniert das mit dem controller und woher weiss ich wasnn ein konstruktor auch mein controller annehmen muss und was der konstruktor vom controller als parameter nehmen muss und als felder
-
         actionBtn.addActionListener(e -> controller.toggleReminder(reminder.getId()));
 
         deleteBtn.addActionListener(e -> {
             controller.deleteReminder(reminder.getId());
 
-            //TODO was ist das hier?
+            // damit sich die Box nicht von sich aus löscht sondern vom parent
             Container parent = this.getParent();
             if (parent != null) {
                 parent.remove(this);
@@ -73,7 +71,6 @@ public class ReminderBoxPanel extends JPanel {
         this.add(btnPanel,BorderLayout.SOUTH);
 
     }
-
     // später benötigt, falls der manager ausgeweitet wird
     private void updateDisplay() {
         infoArea.setText(

@@ -1,8 +1,5 @@
 package org.FEB17.ui;
 
-import org.FEB17.controller.ReminderController;
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -16,7 +13,9 @@ public class ReminderListPanel extends JPanel {
     public ReminderListPanel() {
         this.setLayout(new BorderLayout());
 
-        // Container für die Reminder-Boxen
+        // Container für die Reminder-Boxen da wir ScrollPane verwenden
+        // scrollPane und komplexe Layouts sind nicht kompatibel
+        // deshalb lieber einen Container verwenden
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
         reminderBoxes = new ArrayList<>();

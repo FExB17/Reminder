@@ -20,6 +20,10 @@ public class Reminder {
         this.status = Status.STOPPED;
     }
 
+    public Reminder() {
+        this.id = UUID.randomUUID();
+    }
+
     public String getRecipient() {
         return recipient;
     }
