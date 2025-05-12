@@ -9,9 +9,7 @@ import org.FEB17.ui.ReminderBoxPanel;
 import org.FEB17.ui.ReminderFormPanel;
 import org.FEB17.ui.ReminderListPanel;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ReminderController {
     private final ReminderManager reminderManager;
@@ -32,16 +30,9 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
 
         if (reminder.getStatus() == Status.ACTIVE) {
             reminderManager.stopReminder(id);
-            MailScheduler.stop(id);
             updateViewToStopped(id);
         } else {
             reminderManager.startReminder(id);
-            MailScheduler.startScheduledMailing(id, reminder.getInterval(), () -> new MailData(
-                    reminder.getRecipient(),
-                    reminder.getSubject(),
-                    reminder.getBody(),
-                    reminder.getInterval()
-            ));
             updateViewToActive(id);
         }
     }
@@ -60,21 +51,13 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
         }
     }
 
+    // erstellt die reminder und den scheduler
     public void createReminder(MailData mailData, int interval){
-     Reminder reminder = new Reminder(mailData, interval);
-     reminder.setStatus(Status.ACTIVE);
-     reminderManager.addReminder(reminder);
-
-
-     ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this);
-     reminderListPanel.addReminderBox(panel);
-     reminderViews.put(reminder.getId(), panel);
-     MailScheduler.startScheduledMailing(
-             reminder.getId(),
-             reminder.getInterval(),
-             () -> mailData
-     );
- }
+        Reminder reminder = reminderManager.createReminder(mailData, interval);
+        ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this);
+        reminderListPanel.addReminderBox(panel);
+        reminderViews.put(reminder.getId(), panel);
+    }
 
     public void fillForm(UUID id) {
         Reminder reminder = reminderManager.getReminder(id);
@@ -82,48 +65,32 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
             formPanel.fillForm(reminder);
         }
     }
+    
     public void stopAllReminders() {
-        for (Reminder reminder : reminderManager.getAllReminder()) {
-            reminder.setStatus(Status.STOPPED);
-            MailScheduler.stop(reminder.getId());
-        }
-
+        reminderManager.stopAllReminders();
         for (UUID id : reminderViews.keySet()) {
             updateViewToStopped(id);
         }
     }
+    
     public void deleteReminder(UUID id){
-    reminderManager.removeReminder(id);
-    MailScheduler.stop(id);
     ReminderBoxPanel panel = reminderViews.remove(id);
         if (panel != null) {
             reminderListPanel.removeBox(panel);
         }
     }
 
+    // ladet alle reminder und startet die aktiven scheduler
     public void renderAllReminders() {
-        reminderManager.getAllReminder().forEach(reminder ->{
+        List<Reminder> sortedReminders = reminderManager.getAllReminder().stream()
+                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
+                                .toList();
+        sortedReminders.forEach(reminder ->{
             ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
             reminderListPanel.addReminderBox(reminderBoxPanel);
             reminderViews.put(reminder.getId(), reminderBoxPanel);
-            startSchedulerIfActive(reminder);
+            reminderManager.startSchedulerIfActive(reminder);
         });
     }
-
-    public void startSchedulerIfActive(Reminder reminder){
-        if (reminder.getStatus() == Status.ACTIVE) {
-            MailScheduler.startScheduledMailing(
-                    reminder.getId(),
-                    reminder.getInterval(),
-                    () -> new MailData(
-                            reminder.getRecipient(),
-                            reminder.getSubject(),
-                            reminder.getBody(),
-                            reminder.getInterval()
-                    )
-            );
-        }
-    }
-
 
 }

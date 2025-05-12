@@ -10,6 +10,11 @@ public class Reminder {
     private int interval;
     private Status status;
     private final UUID id;
+    private final long createdAt;
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
 
     public Reminder(MailData data, int interval) {
         this.id = UUID.randomUUID();
@@ -18,10 +23,12 @@ public class Reminder {
         this.body = data.body();
         this.interval = interval;
         this.status = Status.STOPPED;
+        this.createdAt = System.currentTimeMillis();
     }
-
+    //TODO erstellt wegen der json serialisierung wieso wird es nicht benutzt?
     public Reminder() {
         this.id = UUID.randomUUID();
+        this.createdAt = System.currentTimeMillis();
     }
 
     public String getRecipient() {

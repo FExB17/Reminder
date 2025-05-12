@@ -106,3 +106,27 @@ Mai 11, 2025 2:23:25 PM org.FEB17.mail.MailSender sendMail
 INFORMATION: successfully sent
 Mai 11, 2025 2:23:25 PM org.FEB17.mail.MailSender sendMail
 INFORMATION: successfully sent
+Mai 11, 2025 3:31:22 PM org.FEB17.utils.ConfigReader <init>
+INFORMATION: config file loaded
+Mai 11, 2025 3:31:22 PM org.FEB17.utils.ConfigReader <init>
+INFORMATION: config file loaded
+Mai 11, 2025 3:31:23 PM org.FEB17.mail.MailSender sendMail
+INFORMATION: successfully sent
+Mai 11, 2025 3:31:23 PM org.FEB17.mail.MailSender sendMail
+INFORMATION: successfully sent
+Mai 11, 2025 3:32:22 PM org.FEB17.utils.ConfigReader <init>
+INFORMATION: config file loaded
+Mai 11, 2025 3:32:22 PM org.FEB17.utils.ConfigReader <init>
+INFORMATION: config file loaded
+Mai 11, 2025 3:32:22 PM org.FEB17.mail.MailSender sendMail
+INFORMATION: successfully sent
+Mai 11, 2025 3:32:22 PM org.FEB17.mail.MailSender sendMail
+INFORMATION: successfully sent
+Mai 12, 2025 11:26:59 AM org.FEB17.utils.ConfigReader <init>
+INFORMATION: config file loaded
+Mai 12, 2025 11:26:59 AM org.FEB17.utils.ConfigReader <init>
+INFORMATION: config file loaded
+Mai 12, 2025 11:27:00 AM org.FEB17.mail.MailSender sendMail
+INFORMATION: successfully sent
+Mai 12, 2025 11:27:00 AM org.FEB17.mail.MailSender sendMail
+INFORMATION: successfully sent

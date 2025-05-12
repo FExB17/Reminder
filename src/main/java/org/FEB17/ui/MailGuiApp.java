@@ -35,7 +35,7 @@ public class MailGuiApp {
 
         frame.addWindowListener(new WindowAdapter(){
             @Override
-            public void windowClosing(WindowEvent ignored){
+            public void windowClosing(WindowEvent e){
                 ReminderStorage.saveReminders(manager.getAllReminder());
                 frame.dispose();
                 System.exit(0);

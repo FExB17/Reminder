@@ -13,7 +13,6 @@ public class ReminderBoxPanel extends JPanel {
 
     private final Reminder reminder;
     private final JLabel statusLabel;
-
     private final JButton actionBtn;
     private final JTextArea infoArea;
 
@@ -55,7 +54,7 @@ public class ReminderBoxPanel extends JPanel {
         deleteBtn.addActionListener(e -> {
             controller.deleteReminder(reminder.getId());
 
-            // damit sich die Box nicht von sich aus löscht sondern vom parent
+            // damit sich die Box nicht von sich aus löscht, sondern vom parent
             Container parent = this.getParent();
             if (parent != null) {
                 parent.remove(this);
@@ -80,6 +79,7 @@ public class ReminderBoxPanel extends JPanel {
                         "Status: " + reminder.getStatus()
         );
     }
+
     public void updateToActive() {
         statusLabel.setText("Active");
         actionBtn.setText("Stop");

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ReminderStorage {
+
     private static final Path path = Paths.get(System.getProperty("user.home"), "reminders.json");
     static Logger logger = Logger.getLogger(ReminderStorage.class.getName());
 
@@ -27,7 +28,7 @@ public class ReminderStorage {
            logger.severe(e.getMessage());
         }
     }
-    
+    //TODO: change to void
     public static List<Reminder> loadReminders() {
         List<Reminder> list = new ArrayList<>();
         if (Files.exists(path)) {
