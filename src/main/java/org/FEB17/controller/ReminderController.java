@@ -75,6 +75,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     
     public void deleteReminder(UUID id){
     ReminderBoxPanel panel = reminderViews.remove(id);
+    reminderManager.deleteReminder(id);
         if (panel != null) {
             reminderListPanel.removeBox(panel);
         }
@@ -82,8 +83,10 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
 
     // ladet alle reminder und startet die aktiven scheduler
     public void renderAllReminders() {
+        // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
         List<Reminder> sortedReminders = reminderManager.getAllReminder().stream()
-                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
+                                                        //reversed damit neueste zuerst angezeigt wird
+                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt).reversed())
                                 .toList();
         sortedReminders.forEach(reminder ->{
             ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);

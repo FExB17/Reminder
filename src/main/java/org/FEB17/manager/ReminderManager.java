@@ -27,11 +27,6 @@ public class ReminderManager {
         return reminder;
     }
 
-    public void addReminder(Reminder reminder){
-        remindersMap.put(reminder.getId(), reminder);
-
-    }
-
     public void deleteReminder(UUID id){
         MailScheduler.stop(id);
         remindersMap.remove(id);

@@ -22,9 +22,10 @@ public class Reminder {
         this.subject = data.subject();
         this.body = data.body();
         this.interval = interval;
-        this.status = Status.STOPPED;
+        this.status = Status.ACTIVE;
         this.createdAt = System.currentTimeMillis();
     }
+
     //TODO erstellt wegen der json serialisierung wieso wird es nicht benutzt?
     public Reminder() {
         this.id = UUID.randomUUID();
