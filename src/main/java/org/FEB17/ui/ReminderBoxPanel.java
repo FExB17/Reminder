@@ -70,16 +70,6 @@ public class ReminderBoxPanel extends JPanel {
         this.add(btnPanel,BorderLayout.SOUTH);
 
     }
-    // später benötigt, falls der manager ausgeweitet wird
-    private void updateDisplay() {
-        infoArea.setText(
-                "To: " + reminder.getRecipient() + "\n" +
-                        "Subject: " + reminder.getSubject() + "\n" +
-                        "Interval: " + reminder.getInterval() + " min\n" +
-                        "Status: " + reminder.getStatus()
-        );
-    }
-
     public void updateToActive() {
         statusLabel.setText("Active");
         actionBtn.setText("Stop");
@@ -88,6 +78,9 @@ public class ReminderBoxPanel extends JPanel {
     public void updateToStopped() {
         statusLabel.setText("Stopped");
         actionBtn.setText("Start");
+    }
+    public Reminder getReminder() {
+        return reminder;
     }
 
 }

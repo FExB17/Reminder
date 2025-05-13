@@ -11,40 +11,38 @@ import org.FEB17.ui.ReminderListPanel;
 import java.util.*;
 
 public class ReminderController {
-    private final ReminderManager reminderManager;
-    private final ReminderListPanel reminderListPanel;
-    private final Map<UUID, ReminderBoxPanel> reminderBoxPanels;
+    private final ReminderManager manager;
+    private final ReminderListPanel listPanel;
     private final ReminderFormPanel formPanel;
 
 public ReminderController(ReminderManager manager, ReminderListPanel listPanel, ReminderFormPanel formPanel) {
-    this.reminderManager = manager;
-    this.reminderListPanel = listPanel;
+    this.manager = manager;
+    this.listPanel = listPanel;
     this.formPanel = formPanel;
-    this.reminderBoxPanels = new HashMap<>();
 }
 
     public void toggleReminder(UUID id) {
-        Reminder reminder = reminderManager.getReminder(id);
+        Reminder reminder = manager.getReminder(id);
         if (reminder == null) return;
 
         if (reminder.getStatus() == Status.ACTIVE) {
-            reminderManager.stopReminder(id);
+            manager.stopReminder(id);
             updateViewToStopped(id);
         } else {
-            reminderManager.startReminder(id);
+            manager.startReminder(id);
             updateViewToActive(id);
         }
     }
 
     public void updateViewToActive(UUID id){
-    ReminderBoxPanel panel = reminderBoxPanels.get(id);
+    ReminderBoxPanel panel = listPanel.getReminderBox(id);
     if(panel != null){
         panel.updateToActive();
     }
  }
 
     public void updateViewToStopped(UUID id) {
-        ReminderBoxPanel panel = reminderBoxPanels.get(id);
+        ReminderBoxPanel panel = listPanel.getReminderBox(id);
         if (panel != null) {
             panel.updateToStopped();
         }
@@ -52,45 +50,41 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
 
     // erstellt die reminder und den scheduler
     public void createReminder(MailData mailData, int interval){
-        Reminder reminder = reminderManager.createReminder(mailData, interval);
+        Reminder reminder = manager.createReminder(mailData, interval);
         ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this);
-        reminderListPanel.addReminderBox(panel);
-        reminderBoxPanels.put(reminder.getId(), panel);
+        listPanel.addReminderBox(panel);
     }
 
     public void fillForm(UUID id) {
-        Reminder reminder = reminderManager.getReminder(id);
+        Reminder reminder = manager.getReminder(id);
         if (reminder != null) {
             formPanel.fillForm(reminder);
         }
     }
     
     public void stopAllReminders() {
-        reminderManager.stopAllReminders();
-        for (UUID id : reminderBoxPanels.keySet()) {
-            updateViewToStopped(id);
-        }
+        manager.stopAllReminders();
+        listPanel.getAllReminderBoxPanels().forEach(ReminderBoxPanel::updateToStopped);
     }
     
     public void deleteReminder(UUID id){
-    ReminderBoxPanel panel = reminderBoxPanels.remove(id);
-    reminderManager.deleteReminder(id);
+    ReminderBoxPanel panel = listPanel.getReminderBox(id);
+    manager.deleteReminder(id);
         if (panel != null) {
-            reminderListPanel.removeBox(panel);
+            listPanel.removeBox(panel);
         }
     }
 
     // ladet alle reminder und startet die aktiven scheduler
     public void renderAllReminders() {
         // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
-        List<Reminder> sortedReminders = reminderManager.getAllReminder().stream()
+        List<Reminder> sortedReminders = manager.getAllReminder().stream()
                         .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
                                 .toList();
         sortedReminders.forEach(reminder ->{
             ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
-            reminderListPanel.addReminderBox(reminderBoxPanel);
-            reminderBoxPanels.put(reminder.getId(), reminderBoxPanel);
-            reminderManager.startSchedulerIfActive(reminder);
+            listPanel.addReminderBox(reminderBoxPanel);
+            manager.startSchedulerIfActive(reminder);
         });
     }
 

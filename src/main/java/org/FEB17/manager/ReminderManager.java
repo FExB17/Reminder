@@ -21,12 +21,12 @@ public class ReminderManager {
      * @param interval Das Intervall in Minuten.
      * @return Die erstellte Erinnerung.
      */
-    private Map<UUID, Reminder> remindersMap = new HashMap<>();
+    private Map<UUID, Reminder> reminders = new HashMap<>();
 
     public Reminder createReminder(MailData data, int interval) {
         Reminder reminder = new Reminder(data, interval);
-        remindersMap.put(reminder.getId(), reminder);
-        ReminderStorage.saveReminders(remindersMap.values());
+        reminders.put(reminder.getId(), reminder);
+        ReminderStorage.saveReminders(reminders.values());
 
         if (reminder.getStatus() == Status.ACTIVE) {
             MailScheduler.startScheduledMailing(
@@ -40,29 +40,29 @@ public class ReminderManager {
 
     public void deleteReminder(UUID id){
         MailScheduler.stop(id);
-        remindersMap.remove(id);
-        ReminderStorage.saveReminders(remindersMap.values());
+        reminders.remove(id);
+        ReminderStorage.saveReminders(reminders.values());
     }
 
     public Collection<Reminder> getAllReminder(){
-        return remindersMap.values();
+        return reminders.values();
     }
 
     public Reminder getReminder(UUID id){
-       return remindersMap.get(id);
+       return reminders.get(id);
     }
 
     public void stopReminder(UUID id){
-        Reminder r = remindersMap.get(id);
+        Reminder r = reminders.get(id);
         if(r != null){
             MailScheduler.stop(id);
             r.setStatus(Status.STOPPED);
-            ReminderStorage.saveReminders(remindersMap.values());
+            ReminderStorage.saveReminders(reminders.values());
         }
     }
 
     public void startReminder(UUID id){
-        Reminder r = remindersMap.get(id);
+        Reminder r = reminders.get(id);
         if(r != null){
             MailScheduler.startScheduledMailing(id, r.getInterval(), () -> new MailData(
                     r.getRecipient(),
@@ -71,23 +71,23 @@ public class ReminderManager {
                     r.getInterval()
             ));
             r.setStatus(Status.ACTIVE);
-            ReminderStorage.saveReminders(remindersMap.values());
+            ReminderStorage.saveReminders(reminders.values());
         }
     }
 
     public void loadFromDisk (){
         List<Reminder>reminders = ReminderStorage.loadReminders();
         for (Reminder reminder : reminders) {
-            this.remindersMap.put(reminder.getId(),reminder);
+            this.reminders.put(reminder.getId(),reminder);
         }
     }
 
     public void stopAllReminders(){
-        MailScheduler.stopAll(); //TODO lieber stopAll() hier oder stop() im for loop?
-        for (Reminder reminder : remindersMap.values()) {
+        MailScheduler.stopAll();
+        for (Reminder reminder : reminders.values()) {
             reminder.setStatus(Status.STOPPED);
         }
-        ReminderStorage.saveReminders(remindersMap.values());
+        ReminderStorage.saveReminders(reminders.values());
     }
 
     public void startSchedulerIfActive(Reminder reminder){

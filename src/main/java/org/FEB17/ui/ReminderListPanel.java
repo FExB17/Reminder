@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * `ReminderListPanel` ist ein UI-Panel, das eine Liste von Erinnerungsboxen anzeigt.
@@ -13,10 +14,8 @@ import java.util.List;
 public class ReminderListPanel extends JPanel {
 
     private final JPanel listContainer;
-    private final List<ReminderBoxPanel> reminderBoxes;
+    private final List<ReminderBoxPanel> Boxes;
     final JButton sortBtn;
-    private ReminderController controller;
-    private boolean isAscending = true;
 
 
     public ReminderListPanel() {
@@ -33,7 +32,7 @@ public class ReminderListPanel extends JPanel {
         // deshalb lieber einen Container verwenden
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
-        reminderBoxes = new ArrayList<>();
+        Boxes = new ArrayList<>();
 
         // Scrollbar hinzufügen
         JScrollPane scrollPane = new JScrollPane(listContainer);
@@ -52,7 +51,7 @@ public class ReminderListPanel extends JPanel {
 
 
     public void addReminderBox(ReminderBoxPanel panel) {
-        reminderBoxes.add(panel);
+        Boxes.add(panel);
         listContainer.add(panel);
         listContainer.revalidate();
         listContainer.repaint();
@@ -62,4 +61,15 @@ public class ReminderListPanel extends JPanel {
         listContainer.revalidate();
         listContainer.repaint();
     }
+
+    public ReminderBoxPanel getReminderBox(UUID id){
+        return Boxes.stream()
+                .filter(box -> box.getReminder().getId().equals(id))
+                .findFirst().orElse(null);
+    }
+
+    public List<ReminderBoxPanel> getAllReminderBoxPanels(){
+        return new ArrayList<>(Boxes);
+    }
+
 }
