@@ -7,9 +7,20 @@ import org.FEB17.persistence.ReminderStorage;
 import org.FEB17.scheduler.MailScheduler;
 
 import java.util.*;
-
+/**
+ * Die Klasse `ReminderManager` verwaltet Erinnerungen und deren Status.
+ * Sie bietet Methoden zum Erstellen, Löschen, Starten und Stoppen von Erinnerungen
+ * sowie zum Laden und Speichern von Erinnerungen.
+ */
 public class ReminderManager {
-
+    /**
+     * Erstellt eine neue Erinnerung und speichert sie.
+     * Wenn die Erinnerung aktiv ist, wird ein Scheduler gestartet.
+     *
+     * @param data     Die Mail-Daten der Erinnerung.
+     * @param interval Das Intervall in Minuten.
+     * @return Die erstellte Erinnerung.
+     */
     private Map<UUID, Reminder> remindersMap = new HashMap<>();
 
     public Reminder createReminder(MailData data, int interval) {

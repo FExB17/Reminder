@@ -28,7 +28,7 @@ public class ReminderStorage {
            logger.severe(e.getMessage());
         }
     }
-    //TODO: change to void
+
     public static List<Reminder> loadReminders() {
         List<Reminder> list = new ArrayList<>();
         if (Files.exists(path)) {

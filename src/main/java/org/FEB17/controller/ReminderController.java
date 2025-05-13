@@ -4,7 +4,6 @@ import org.FEB17.mail.MailData;
 import org.FEB17.manager.ReminderManager;
 import org.FEB17.models.Reminder;
 import org.FEB17.models.Status;
-import org.FEB17.scheduler.MailScheduler;
 import org.FEB17.ui.ReminderBoxPanel;
 import org.FEB17.ui.ReminderFormPanel;
 import org.FEB17.ui.ReminderListPanel;
@@ -14,14 +13,14 @@ import java.util.*;
 public class ReminderController {
     private final ReminderManager reminderManager;
     private final ReminderListPanel reminderListPanel;
-    private final Map<UUID, ReminderBoxPanel> reminderViews;
+    private final Map<UUID, ReminderBoxPanel> reminderBoxPanels;
     private final ReminderFormPanel formPanel;
 
 public ReminderController(ReminderManager manager, ReminderListPanel listPanel, ReminderFormPanel formPanel) {
     this.reminderManager = manager;
     this.reminderListPanel = listPanel;
     this.formPanel = formPanel;
-    this.reminderViews = new HashMap<>();
+    this.reminderBoxPanels = new HashMap<>();
 }
 
     public void toggleReminder(UUID id) {
@@ -38,14 +37,14 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     }
 
     public void updateViewToActive(UUID id){
-    ReminderBoxPanel panel = reminderViews.get(id);
+    ReminderBoxPanel panel = reminderBoxPanels.get(id);
     if(panel != null){
         panel.updateToActive();
     }
  }
 
     public void updateViewToStopped(UUID id) {
-        ReminderBoxPanel panel = reminderViews.get(id);
+        ReminderBoxPanel panel = reminderBoxPanels.get(id);
         if (panel != null) {
             panel.updateToStopped();
         }
@@ -56,7 +55,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
         Reminder reminder = reminderManager.createReminder(mailData, interval);
         ReminderBoxPanel panel = new ReminderBoxPanel(reminder, this);
         reminderListPanel.addReminderBox(panel);
-        reminderViews.put(reminder.getId(), panel);
+        reminderBoxPanels.put(reminder.getId(), panel);
     }
 
     public void fillForm(UUID id) {
@@ -68,13 +67,13 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     
     public void stopAllReminders() {
         reminderManager.stopAllReminders();
-        for (UUID id : reminderViews.keySet()) {
+        for (UUID id : reminderBoxPanels.keySet()) {
             updateViewToStopped(id);
         }
     }
     
     public void deleteReminder(UUID id){
-    ReminderBoxPanel panel = reminderViews.remove(id);
+    ReminderBoxPanel panel = reminderBoxPanels.remove(id);
     reminderManager.deleteReminder(id);
         if (panel != null) {
             reminderListPanel.removeBox(panel);
@@ -85,13 +84,12 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     public void renderAllReminders() {
         // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
         List<Reminder> sortedReminders = reminderManager.getAllReminder().stream()
-                                                        //reversed damit neueste zuerst angezeigt wird
-                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt).reversed())
+                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
                                 .toList();
         sortedReminders.forEach(reminder ->{
             ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
             reminderListPanel.addReminderBox(reminderBoxPanel);
-            reminderViews.put(reminder.getId(), reminderBoxPanel);
+            reminderBoxPanels.put(reminder.getId(), reminderBoxPanel);
             reminderManager.startSchedulerIfActive(reminder);
         });
     }
