@@ -10,15 +10,21 @@ import org.FEB17.ui.ReminderListPanel;
 
 import java.util.*;
 
+/**
+ * Die Klasse `ReminderController` verwaltet die Logik für Erinnerungen und deren Darstellung.
+ * Sie verbindet die Geschäftslogik (`ReminderManager`) mit der Benutzeroberfläche (`ReminderListPanel` und `ReminderFormPanel`).
+ */
 public class ReminderController {
     private final ReminderManager manager;
     private final ReminderListPanel listPanel;
     private final ReminderFormPanel formPanel;
 
+
 public ReminderController(ReminderManager manager, ReminderListPanel listPanel, ReminderFormPanel formPanel) {
     this.manager = manager;
     this.listPanel = listPanel;
     this.formPanel = formPanel;
+    this.listPanel.setController(this);
 }
 
     public void toggleReminder(UUID id) {
@@ -64,7 +70,6 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     
     public void stopAllReminders() {
         manager.stopAllReminders();
-        listPanel.getAllReminderBoxPanels().forEach(ReminderBoxPanel::updateToStopped);
     }
     
     public void deleteReminder(UUID id){
@@ -77,6 +82,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
 
     // ladet alle reminder und startet die aktiven scheduler
     public void renderAllReminders() {
+
         // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
         List<Reminder> sortedReminders = manager.getAllReminder().stream()
                         .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
@@ -86,6 +92,11 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
             listPanel.addReminderBox(reminderBoxPanel);
             manager.startSchedulerIfActive(reminder);
         });
+    }
+
+    public void renderSortedReminders(boolean ascending){
+    List<Reminder> sorted = manager.getSortedByCreatedAt(ascending);
+    listPanel.render(sorted,this);
     }
 
 }

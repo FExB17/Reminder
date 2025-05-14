@@ -1,6 +1,8 @@
 package org.FEB17.ui;
 
 import org.FEB17.controller.ReminderController;
+import org.FEB17.models.Reminder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,8 +16,11 @@ import java.util.UUID;
 public class ReminderListPanel extends JPanel {
 
     private final JPanel listContainer;
-    private final List<ReminderBoxPanel> Boxes;
     final JButton sortBtn;
+    private ReminderController controller;
+    //TODO muss den wert vom config file bekommen
+    private boolean ascending = true;
+
 
 
     public ReminderListPanel() {
@@ -32,27 +37,21 @@ public class ReminderListPanel extends JPanel {
         // deshalb lieber einen Container verwenden
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
-        Boxes = new ArrayList<>();
 
         // Scrollbar hinzufügen
         JScrollPane scrollPane = new JScrollPane(listContainer);
         this.add(scrollPane, BorderLayout.CENTER);
 
+
         sortBtn.addActionListener(e ->{
-            // reminder aus manager holen
-            // lesen in welche richtung sortiert werden muss
-            // aus der setting.properties file
-            // sortieren
-            // reminder in den listContainer hinzufügen
-            // beim erstellen sind sie ohnehin neu alt nach neu
-            // neuen reminder sollen standardmäßig oben sein
+            ascending = !ascending;
+            sortBtn.setText(ascending ? "Sort ↑" : "Sort ↓");
+            controller.renderSortedReminders(ascending);
         });
     }
 
-
-    public void addReminderBox(ReminderBoxPanel panel) {
-        Boxes.add(panel);
-        listContainer.add(panel);
+    public void addReminderBox(ReminderBoxPanel box) {
+        listContainer.add(box);
         listContainer.revalidate();
         listContainer.repaint();
     }
@@ -62,14 +61,32 @@ public class ReminderListPanel extends JPanel {
         listContainer.repaint();
     }
 
-    public ReminderBoxPanel getReminderBox(UUID id){
-        return Boxes.stream()
-                .filter(box -> box.getReminder().getId().equals(id))
-                .findFirst().orElse(null);
-    }
+public void render (List<Reminder> reminders, ReminderController controller){
+        listContainer.removeAll();
+        for (Reminder reminder : reminders){
+            ReminderBoxPanel box = new ReminderBoxPanel(reminder, controller);
+            listContainer.add(box);
+        }
+        listContainer.revalidate();
+        listContainer.repaint();
 
-    public List<ReminderBoxPanel> getAllReminderBoxPanels(){
-        return new ArrayList<>(Boxes);
-    }
+    SwingUtilities.invokeLater(() -> {
+        JScrollBar verticalBar = ((JScrollPane) this.getComponent(1)).getVerticalScrollBar();
+        verticalBar.setValue(0);
+    });
+}
+public void setController(ReminderController controller){
+        this.controller = controller;
+}
+public ReminderBoxPanel getReminderBox(UUID id){
+        for (Component component : listContainer.getComponents()){
+            if (component instanceof ReminderBoxPanel box){
+                if (box.getReminder().getId().equals(id)){
+                    return box;
+                }
+            }
+        }
+        return null;
+}
 
 }
