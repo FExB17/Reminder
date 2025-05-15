@@ -3,7 +3,6 @@ package org.FEB17.models;
 import org.FEB17.mail.MailData;
 
 import java.util.UUID;
-
 public class Reminder {
 
     private String recipient, subject, body;
@@ -26,7 +25,11 @@ public class Reminder {
         this.createdAt = System.currentTimeMillis();
     }
 
-    //TODO erstellt wegen der json serialisierung wieso wird es nicht benutzt?
+    /**
+     * Notwendig für JSON-Deserialisierung durch Gson.
+     * Wird im Code nicht direkt verwendet.
+     */
+    @SuppressWarnings("unused")
     public Reminder() {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
@@ -36,16 +39,9 @@ public class Reminder {
         return recipient;
     }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
 
     public String getSubject() {
         return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     public String getBody() {
@@ -54,10 +50,6 @@ public class Reminder {
 
     public int getInterval() {
         return interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
     }
 
     public Status getStatus() {

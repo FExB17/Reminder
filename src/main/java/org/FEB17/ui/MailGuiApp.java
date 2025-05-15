@@ -3,12 +3,12 @@ package org.FEB17.ui;
 import org.FEB17.controller.ReminderController;
 import org.FEB17.manager.ReminderManager;
 import org.FEB17.persistence.ReminderStorage;
+import org.FEB17.utils.SettingsAccess;
 
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class MailGuiApp {
 
@@ -26,7 +26,7 @@ public class MailGuiApp {
         ReminderFormPanel formPanel = new ReminderFormPanel(() -> holder[0]);
         ReminderListPanel listPanel = new ReminderListPanel();
         holder[0] = new ReminderController(manager, listPanel, formPanel);
-        holder[0].renderAllReminders();
+        holder[0].renderSortedReminders(Boolean.parseBoolean(SettingsAccess.getProperty("isAscending")));
 
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);

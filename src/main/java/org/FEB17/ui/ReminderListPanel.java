@@ -2,10 +2,10 @@ package org.FEB17.ui;
 
 import org.FEB17.controller.ReminderController;
 import org.FEB17.models.Reminder;
+import org.FEB17.utils.SettingsAccess;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,8 +18,7 @@ public class ReminderListPanel extends JPanel {
     private final JPanel listContainer;
     final JButton sortBtn;
     private ReminderController controller;
-    //TODO muss den wert vom config file bekommen
-    private boolean ascending = true;
+    private boolean ascending = Boolean.parseBoolean(SettingsAccess.getProperty("isAscending"));
 
 
 
@@ -27,7 +26,8 @@ public class ReminderListPanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        sortBtn = new JButton("Sort ↑"); // ↓
+        sortBtn = new JButton();
+        sortBtn.setText(ascending ? "Sort ↑" : "Sort ↓");
         sortBtn.setFocusable(false);
         topPanel.add(sortBtn);
         this.add(topPanel, BorderLayout.NORTH);
@@ -47,6 +47,7 @@ public class ReminderListPanel extends JPanel {
             ascending = !ascending;
             sortBtn.setText(ascending ? "Sort ↑" : "Sort ↓");
             controller.renderSortedReminders(ascending);
+            SettingsAccess.setProperty("isAscending", String.valueOf(ascending));
         });
     }
 
@@ -70,14 +71,17 @@ public void render (List<Reminder> reminders, ReminderController controller){
         listContainer.revalidate();
         listContainer.repaint();
 
+        // Scrollen zum Anfang der Liste
     SwingUtilities.invokeLater(() -> {
         JScrollBar verticalBar = ((JScrollPane) this.getComponent(1)).getVerticalScrollBar();
         verticalBar.setValue(0);
     });
 }
+
 public void setController(ReminderController controller){
         this.controller = controller;
 }
+
 public ReminderBoxPanel getReminderBox(UUID id){
         for (Component component : listContainer.getComponents()){
             if (component instanceof ReminderBoxPanel box){

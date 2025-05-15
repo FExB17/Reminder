@@ -12,6 +12,8 @@ Die App basiert auf Java und nutzt Java Swing für die Benutzeroberfläche.
 - Reminder löschen
 - Alle Reminder stoppen
 - Reminder werden beim Beenden gespeichert und beim Start wieder geladen
+- Reminder werden sortiert angezeigt (nach Erstellungsdatum)
+- der letzte Sortierzustand wird gespeichert
 
 ## Aufbau
 
@@ -26,6 +28,7 @@ Das Projekt ist nach dem MVC-Prinzip (Model-View-Controller) aufgebaut:
 ## Benutzung
 
 1. Projekt mit einer Java-IDE wie IntelliJ öffnen
+2. config.properties anpassen (E-Mail-Daten)
 2. Main-Klasse starten: `MailGuiApp`
 3. Reminder mit Formular anlegen
 4. Anwendung schließen → Reminder werden automatisch gespeichert
@@ -45,7 +48,7 @@ Reminder werden als JSON-Datei im Benutzerverzeichnis gespeichert unter:
 
 ## Konfiguration
 
-Die Anwendung verwendet eine `config.properties`-Datei, z. B.:
+Die Anwendung verwendet eine `config.properties`-Datei, z. B:
 
 ```properties
 mail.user=example@gmail.com
@@ -54,8 +57,6 @@ mail.smtp=smtp.gmail.com
 ```
 
 ## ToDo / Ideen
-- Sortieren der Reminder nach Erstellungsdatum (↑ / ↓)
-- laden des Sortierzusatands beim öffnen
 - zusätzlicher Reiter für Benachrichtigungen auf dem Display
 - Filterfunktion (z. B. nur aktive Reminder anzeigen)
 - Tray-Icon und Hintergrundmodus

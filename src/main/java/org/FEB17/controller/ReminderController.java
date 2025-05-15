@@ -80,23 +80,24 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
         }
     }
 
-    // ladet alle reminder und startet die aktiven scheduler
-    public void renderAllReminders() {
-
-        // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
-        List<Reminder> sortedReminders = manager.getAllReminder().stream()
-                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
-                                .toList();
-        sortedReminders.forEach(reminder ->{
-            ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
-            listPanel.addReminderBox(reminderBoxPanel);
-            manager.startSchedulerIfActive(reminder);
-        });
-    }
+//    // ladet alle reminder und startet die aktiven scheduler
+//    public void renderAllReminders() {
+//        // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
+//        List<Reminder> sortedReminders = manager.getAllReminder().stream()
+//                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
+//                                .toList();
+//        sortedReminders.forEach(reminder ->{
+//            ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
+//            listPanel.addReminderBox(reminderBoxPanel);
+//            manager.startSchedulerIfActive(reminder);
+//        });
+//    }
 
     public void renderSortedReminders(boolean ascending){
     List<Reminder> sorted = manager.getSortedByCreatedAt(ascending);
     listPanel.render(sorted,this);
+    sorted.forEach(manager::startSchedulerIfActive);
+
     }
 
 }
