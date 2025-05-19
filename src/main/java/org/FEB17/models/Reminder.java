@@ -39,7 +39,6 @@ public class Reminder {
         return recipient;
     }
 
-
     public String getSubject() {
         return subject;
     }

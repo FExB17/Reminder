@@ -7,6 +7,7 @@ import org.FEB17.utils.SettingsAccess;
 
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -19,7 +20,11 @@ public class MailGuiApp {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
 
-
+        /**
+         * Ein Array als Holder für den ReminderController, um den Zugriff innerhalb von Lambda-Ausdrücken zu ermöglichen.
+         * Da lokale Variablen in Lambdas final oder effektiv final sein müssen, wird ein Array mit einem Element verwendet,
+         * um den Controller nachträglich zu setzen und darauf zugreifen zu können.
+         */
         ReminderController[] holder = new ReminderController[1];
         ReminderManager manager = new ReminderManager();
         manager.loadFromDisk();
@@ -28,10 +33,14 @@ public class MailGuiApp {
         holder[0] = new ReminderController(manager, listPanel, formPanel);
         holder[0].renderSortedReminders(Boolean.parseBoolean(SettingsAccess.getProperty("isAscending")));
 
-
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);
         splitPane.setDividerLocation(300);
-        frame.add(splitPane);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("E-mail Reminder", splitPane);
+        tabbedPane.addTab("Desktop Reminder", new JPanel());
+        frame.add(tabbedPane);
+        frame.setVisible(true);
 
         frame.addWindowListener(new WindowAdapter(){
             @Override
@@ -41,6 +50,7 @@ public class MailGuiApp {
                 System.exit(0);
             }
         });
-        frame.setVisible(true);
+
+
     }
 }

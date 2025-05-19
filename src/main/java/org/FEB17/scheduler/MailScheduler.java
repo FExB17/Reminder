@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+
 public class MailScheduler {
     private static final Logger logger = Logger.getLogger(MailScheduler.class.getName());
     private static final Map<UUID,ScheduledExecutorService> schedulerMap = new HashMap<>();
@@ -21,7 +22,6 @@ public class MailScheduler {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         Runnable command = () -> {
             MailData data = dataSupplier.get();
-
             MailSender.sendMail(data.to(), data.subject(), data.body());
         };
 
@@ -44,5 +44,4 @@ public class MailScheduler {
             stop(id);
         }
     }
-
-}
+ }

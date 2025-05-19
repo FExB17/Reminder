@@ -8,13 +8,13 @@ import java.util.logging.Logger;
 public class ConfigReader {
 
     private static final Logger logger  = Logger.getLogger(ConfigReader.class.getName());
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
-    FileReader file;
 
-    {
+
+    static{
         try {
-            file = new FileReader("src/main/resources/config.properties");
+            FileReader file = new FileReader("src/main/resources/config.properties");
             properties.load(file);
             logger.info("config file loaded");
         } catch (IOException e) {

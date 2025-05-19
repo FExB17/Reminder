@@ -38,6 +38,12 @@ public class ReminderBoxPanel extends JPanel {
         );
 
         this.add(infoArea, BorderLayout.CENTER);
+
+        /**
+         * Fügt einen MouseListener zum infoArea hinzu, der beim Klicken das Formular
+         * mit den Daten des aktuellen Reminders füllt, indem die Methode
+         * controller.fillForm(reminder.getId()) aufgerufen wird.
+         */
         infoArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
@@ -70,11 +76,20 @@ public class ReminderBoxPanel extends JPanel {
         this.add(btnPanel,BorderLayout.SOUTH);
 
     }
+
+    /**
+     * ändert den Status der Box auf "Aktiv"
+     * und ändert den Text des Buttons auf "Stop"
+     */
     public void updateToActive() {
         statusLabel.setText("Active");
         actionBtn.setText("Stop");
     }
 
+    /**
+     * ändert den Status der Box auf "Stopped"
+     * und ändert den Text des Buttons auf "Start"
+     */
     public void updateToStopped() {
         statusLabel.setText("Stopped");
         actionBtn.setText("Start");

@@ -15,72 +15,26 @@ import java.util.logging.Logger;
 
 public class MailSender {
     private static final Logger logger  = Logger.getLogger(MailSender.class.getName());
+    private static final ConfigReader config = new ConfigReader();
 
-//    public static void sendMail(){
-//        ConfigReader config = new ConfigReader();
-//
-//        // Empfänger und Absender-Details
-//        final String username = config.getProperty("username"); // Absender-Email-Adresse
-//        final String password = config.getProperty("password"); // Passwort oder App-spezifisches Passwort
-//
-//        // Empfänger
-//        String toEmail = config.getProperty("toMail").replace(" ","");
-//
-//
-//        // SMTP-Server-Einstellungen
-//        Properties props = new Properties();
-//        props.put("mail.smtp.auth", "true"); // Authentifizierung erforderlich
-//        props.put("mail.smtp.starttls.enable", "true"); // TLS aktivieren
-//        props.put("mail.smtp.host", "smtp.gmail.com"); // SMTP-Server
-//        props.put("mail.smtp.port", "587"); // Port
-//
-//        // Authentifizieren und Session erstellen
-//        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-//            protected PasswordAuthentication getPasswordAuthentication() {
-//                return new PasswordAuthentication(username, password);
-//            }
-//        });
-//
-//        try {
-//            // Erstelle eine neue E-Mail-Nachricht
-//            Message message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress(username)); // Absender
-//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail)); // Empfänger; Methode erkennt kommata automatisch
-//
-//            String subject = config.getProperty("subject");
-//            String body = config.getProperty("body");
-//            message.setSubject(subject); // Betreff
-//            message.setText(body); // Inhalt der E-Mail
-//
-//            // E-Mail senden
-//            Transport.send(message);
-//
-//            logger.info("Mail successfully sent");
-//
-//        } catch (MessagingException e) {
-//            logger.severe("Error while sending the mail : " + e.getMessage());
-//        }
-//    }
+    public static Properties createGmailProperties(){
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        return props;
+    }
 
     public static String sendMail (String toMail, String subject, String body){
         String statusInfo;
+
         //TODO die daten aus dem config reader nur einmal einlesen und abspeichern damit nicht jedesmal configreader erneut initialisiert wird
-        ConfigReader config = new ConfigReader();
-
-
-        // Empfänger und Absender-Details
         final String username = config.getProperty("username"); // Absender-Email-Adresse
         final String password = config.getProperty("password"); // Passwort oder App-spezifisches Passwort
 
+        Properties props = createGmailProperties();
 
-        // SMTP-Server-Einstellungen
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true"); // Authentifizierung erforderlich
-        props.put("mail.smtp.starttls.enable", "true"); // TLS aktivieren
-        props.put("mail.smtp.host", "smtp.gmail.com"); // SMTP-Server
-        props.put("mail.smtp.port", "587"); // Port
-
-        // Authentifizieren und Session erstellen
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -88,24 +42,25 @@ public class MailSender {
         });
 
         try {
-            // Erstelle eine neue E-Mail-Nachricht
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username)); // Absender
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail)); // Empfänger; Methode erkennt kommata automatisch
+            message.setFrom(new InternetAddress(username,"ReminderApp"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail));
+            message.setSubject(subject);
+            message.setText(body);
 
-            message.setSubject(subject); // Betreff
-            message.setText(body); // Inhalt der E-Mail
+            message.setHeader("X-Mailer", "ReminderApp/1.0");
+            message.setHeader("Reply-To", username);
+
 
             // E-Mail senden
             Transport.send(message);
-            statusInfo = "successfully sent";
+            statusInfo = "Mail successfully sent";
             logger.info(statusInfo);
-
-
-        } catch (MessagingException e) {
+            return statusInfo;
+        } catch (Exception e) {
             statusInfo = "Error while sending e-mail : " + e.getMessage();
             logger.severe(statusInfo);
+            return statusInfo;
         }
-        return statusInfo;
     }
 }

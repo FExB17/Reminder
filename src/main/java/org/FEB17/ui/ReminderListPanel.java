@@ -18,9 +18,11 @@ public class ReminderListPanel extends JPanel {
     private final JPanel listContainer;
     final JButton sortBtn;
     private ReminderController controller;
+    /**
+     * `ascending` gibt an, ob die Liste aufsteigend oder absteigend sortiert ist.
+     * wird gelesen aus den Einstellungen
+     */
     private boolean ascending = Boolean.parseBoolean(SettingsAccess.getProperty("isAscending"));
-
-
 
     public ReminderListPanel() {
         this.setLayout(new BorderLayout());
@@ -32,9 +34,11 @@ public class ReminderListPanel extends JPanel {
         topPanel.add(sortBtn);
         this.add(topPanel, BorderLayout.NORTH);
 
-        // Container für die Reminder-Boxen da wir ScrollPane verwenden
-        // scrollPane und komplexe Layouts sind nicht kompatibel
-        // deshalb lieber einen Container verwenden
+/**
+ *          Container für die Reminder-Boxen da wir ScrollPane verwenden
+ *          scrollPane und komplexe Layouts sind nicht kompatibel
+ *          deshalb lieber einen Container verwenden
+ */
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
 
@@ -46,7 +50,7 @@ public class ReminderListPanel extends JPanel {
         sortBtn.addActionListener(e ->{
             ascending = !ascending;
             sortBtn.setText(ascending ? "Sort ↑" : "Sort ↓");
-            controller.renderSortedReminders(ascending);
+            controller.sortViewByCreatedAt(ascending);
             SettingsAccess.setProperty("isAscending", String.valueOf(ascending));
         });
     }
@@ -56,13 +60,14 @@ public class ReminderListPanel extends JPanel {
         listContainer.revalidate();
         listContainer.repaint();
     }
+
     public void removeBox(ReminderBoxPanel panel) {
         listContainer.remove(panel);
         listContainer.revalidate();
         listContainer.repaint();
     }
 
-public void render (List<Reminder> reminders, ReminderController controller){
+    public void render (List<Reminder> reminders, ReminderController controller){
         listContainer.removeAll();
         for (Reminder reminder : reminders){
             ReminderBoxPanel box = new ReminderBoxPanel(reminder, controller);
@@ -78,11 +83,11 @@ public void render (List<Reminder> reminders, ReminderController controller){
     });
 }
 
-public void setController(ReminderController controller){
+    public void setController(ReminderController controller){
         this.controller = controller;
 }
 
-public ReminderBoxPanel getReminderBox(UUID id){
+    public ReminderBoxPanel getReminderBox(UUID id){
         for (Component component : listContainer.getComponents()){
             if (component instanceof ReminderBoxPanel box){
                 if (box.getReminder().getId().equals(id)){

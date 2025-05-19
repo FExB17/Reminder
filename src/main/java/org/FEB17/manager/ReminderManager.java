@@ -11,6 +11,7 @@ import java.util.*;
  * Die Klasse `ReminderManager` verwaltet Erinnerungen und deren Status.
  * Sie bietet Methoden zum Erstellen, Löschen, Starten und Stoppen von Erinnerungen
  * sowie zum Laden und Speichern von Erinnerungen.
+ * Derzeit ist die Klasse nicht thread-sicher.
  */
 public class ReminderManager {
 
@@ -85,6 +86,7 @@ public class ReminderManager {
 
     public void startSchedulerIfActive(Reminder reminder){
         if (reminder.getStatus() == Status.ACTIVE) {
+
             MailScheduler.startScheduledMailing(
                     reminder.getId(),
                     reminder.getInterval(),

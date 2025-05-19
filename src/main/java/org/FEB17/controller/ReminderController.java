@@ -80,24 +80,18 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
         }
     }
 
-//    // ladet alle reminder und startet die aktiven scheduler
-//    public void renderAllReminders() {
-//        // Methodenreferenz Klasse::Methode nutzbar bei functional interfaces
-//        List<Reminder> sortedReminders = manager.getAllReminder().stream()
-//                        .sorted(Comparator.comparingLong(Reminder :: getCreatedAt))
-//                                .toList();
-//        sortedReminders.forEach(reminder ->{
-//            ReminderBoxPanel reminderBoxPanel = new ReminderBoxPanel(reminder, this);
-//            listPanel.addReminderBox(reminderBoxPanel);
-//            manager.startSchedulerIfActive(reminder);
-//        });
-//    }
+    // Methode zum Sortieren der Erinnerungen ohne erneutes Senden der E-Mails, weil renderSortedReminders zwar sortiert aber auch sendet
+    public void sortViewByCreatedAt(boolean ascending){
+        List<Reminder> sorted = manager.getSortedByCreatedAt(ascending);
+        listPanel.render(sorted, this);
 
+    }
+
+    // geeigneten Namen für die Methode finden
     public void renderSortedReminders(boolean ascending){
     List<Reminder> sorted = manager.getSortedByCreatedAt(ascending);
     listPanel.render(sorted,this);
     sorted.forEach(manager::startSchedulerIfActive);
-
     }
 
 }

@@ -9,7 +9,11 @@ import org.FEB17.utils.Gui;
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Supplier;
-
+/**
+ * Das Panel zur Eingabe und Verwaltung von Erinnerungs-E-Mails.
+ * Stellt ein Formular bereit, um Empfänger, Betreff, Nachricht und Intervall für Erinnerungen einzugeben.
+ * Bietet Schaltflächen zum Senden und Stoppen aller Erinnerungen.
+ */
 public class ReminderFormPanel extends JPanel {
 
     private final JTextField mailTo;
@@ -19,6 +23,11 @@ public class ReminderFormPanel extends JPanel {
     private final JLabel errorRecipient, errorSubject, errorMessage;
     private final JLabel statusLabel;
 
+/**
+ * Erstellt ein neues ReminderFormPanel.
+ * Initialisiert das Formular zur Eingabe und Verwaltung von Erinnerungs-E-Mails.
+ * @param controllerSupplier Supplier, der einen ReminderController liefert
+ */
     public ReminderFormPanel(Supplier<ReminderController> controllerSupplier) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -71,16 +80,9 @@ public class ReminderFormPanel extends JPanel {
 
 
         sendBtn.addActionListener(e -> {
-            boolean valid = true;
-            if (!FieldValidator.validateField(mailTo, errorRecipient)) valid = false;
-            if (!FieldValidator.validateField(subject, errorSubject)) valid = false;
-            if (!FieldValidator.validateField(messageArea, errorMessage)) valid = false;
-            if (!FieldValidator.isValidEmail(mailTo.getText())) {
-                errorRecipient.setText("Invalid e-mail address format.");
-                valid = false;
-            }
-
-            if (!valid) return;
+            FieldValidator.installEmailValidation(mailTo, errorRecipient);
+            FieldValidator.install(subject, errorSubject);
+            FieldValidator.install(messageArea, errorMessage);
 
             MailData data = new MailData(
                     mailTo.getText(),
@@ -100,10 +102,18 @@ public class ReminderFormPanel extends JPanel {
         });
     }
 
+    /**
+     * Returns the intervall chosen in the form.
+     * @return the interval in minutes from the form
+     */
     public int getInterval() {
         return (int) intervalSpinner.getValue();
     }
 
+    /**
+     * Fills the form with the data from the given reminder.
+     * @param reminder The reminder to fill the form with.
+     */
     public void fillForm(Reminder reminder) {
         mailTo.setText(reminder.getRecipient());
         subject.setText(reminder.getSubject());
