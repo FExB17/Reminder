@@ -29,7 +29,6 @@ public class MailSender {
     public static String sendMail (String toMail, String subject, String body){
         String statusInfo;
 
-        //TODO die daten aus dem config reader nur einmal einlesen und abspeichern damit nicht jedesmal configreader erneut initialisiert wird
         final String username = config.getProperty("username"); // Absender-Email-Adresse
         final String password = config.getProperty("password"); // Passwort oder App-spezifisches Passwort
 

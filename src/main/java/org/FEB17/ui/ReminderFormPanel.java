@@ -81,9 +81,9 @@ public class ReminderFormPanel extends JPanel {
 
         sendBtn.addActionListener(e -> {
             boolean valid =
-            FieldValidator.installEmailValidation(mailTo, errorRecipient) &
-            FieldValidator.installFieldValidation(subject, errorSubject) &
-            FieldValidator.installFieldValidation(messageArea, errorMessage);
+            FieldValidator.validateEmail(mailTo, errorRecipient) &
+            FieldValidator.validateField(subject, errorSubject) &
+            FieldValidator.validateField(messageArea, errorMessage);
 
             MailData data = new MailData(
                     mailTo.getText(),

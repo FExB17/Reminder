@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 public class Main {
-    // TODO mail darf nicht in Spam-Order
     public static void main(String[] args) {
         try{
             LogManager.getLogManager().readConfiguration(new FileInputStream("src/main/resources/logging.properties"));

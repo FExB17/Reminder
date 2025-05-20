@@ -30,7 +30,7 @@ public class FieldValidator {
 }
 
     // die validierung und das aktualisierung des Labels kann ausgelagert werden
-    public static boolean installFieldValidation(JTextComponent field, JLabel errorLabel){
+    public static boolean validateField(JTextComponent field, JLabel errorLabel){
         Runnable validate = () -> {
             errorLabel.setText(field.getText().isBlank() ? "* Required" : "");
         };
@@ -39,7 +39,7 @@ public class FieldValidator {
     }
 
     // die validierung und das aktualisierung des Labels kann ausgelagert werden
-    public static boolean installEmailValidation(JTextComponent field, JLabel errorLabel) {
+    public static boolean validateEmail(JTextComponent field, JLabel errorLabel) {
         Runnable validate = () -> {
             String text = field.getText();
             if (text.isBlank()) {
