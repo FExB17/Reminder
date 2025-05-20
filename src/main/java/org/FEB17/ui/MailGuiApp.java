@@ -2,13 +2,11 @@ package org.FEB17.ui;
 
 import org.FEB17.controller.ReminderController;
 import org.FEB17.manager.ReminderManager;
-import org.FEB17.models.Notes;
 import org.FEB17.persistence.ReminderStorage;
 import org.FEB17.utils.SettingsAccess;
 
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

@@ -4,15 +4,14 @@ package org.FEB17.models;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Notes {
+public class Note {
     private final UUID id = UUID.randomUUID();
     private final LocalDateTime date = LocalDateTime.now();
-    private String subject;
+    private String content;
 
 
-    public Notes(String subject) {
-
-        this.subject = subject;
+    public Note(String content) {
+        this.content = content;
     }
 
     public UUID getId() {
@@ -20,12 +19,12 @@ public class Notes {
     }
 
 
-    public String getSubject() {
-        return subject;
+    public String getContent() {
+        return content;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public LocalDateTime getDate() {
