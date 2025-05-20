@@ -80,9 +80,10 @@ public class ReminderFormPanel extends JPanel {
 
 
         sendBtn.addActionListener(e -> {
-            FieldValidator.installEmailValidation(mailTo, errorRecipient);
-            FieldValidator.install(subject, errorSubject);
-            FieldValidator.install(messageArea, errorMessage);
+            boolean valid =
+            FieldValidator.installEmailValidation(mailTo, errorRecipient) &
+            FieldValidator.installFieldValidation(subject, errorSubject) &
+            FieldValidator.installFieldValidation(messageArea, errorMessage);
 
             MailData data = new MailData(
                     mailTo.getText(),
@@ -90,9 +91,10 @@ public class ReminderFormPanel extends JPanel {
                     messageArea.getText(),
                     getInterval()
             );
-
-            controllerSupplier.get().createReminder(data, getInterval());
-            statusLabel.setText("Reminder created. Every " + getInterval() + " minutes.");
+            if (valid) {
+                controllerSupplier.get().createReminder(data, getInterval());
+                statusLabel.setText("Reminder created. Every " + getInterval() + " minutes.");
+            }
         });
 
 

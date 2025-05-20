@@ -16,33 +16,39 @@ import java.awt.event.FocusEvent;
  */
 public class FieldValidator {
 
+    public static boolean isValidEmail(JTextComponent field) {
+    if (field.getText().isBlank()){
+        return false;
+    }
+    try {
+        InternetAddress emailAddr = new InternetAddress(field.getText());
+        emailAddr.validate();
+        return true;
+    } catch (AddressException ex) {
+        return false;
+    }
+}
 
-
-    /**
-     * Installiert eine einfache Pflichtfeld-Validierung auf einem Eingabefeld.
-     * Sobald das Feld leer ist, wird eine Meldung angezeigt. Bei gültiger Eingabe verschwindet sie.
-     *
-     * @param field das Eingabefeld (z. B. JTextField)
-     * @param errorLabel das JLabel für Fehlermeldungen
-     */
-    public static void install(JTextComponent field, JLabel errorLabel){
+    // die validierung und das aktualisierung des Labels kann ausgelagert werden
+    public static boolean installFieldValidation(JTextComponent field, JLabel errorLabel){
         Runnable validate = () -> {
             errorLabel.setText(field.getText().isBlank() ? "* Required" : "");
         };
             runListeners(validate, field);
+            return !field.getText().isBlank();
     }
 
-    public static void installEmailValidation(JTextComponent field, JLabel errorLabel) {
-        //ein regex für E-mail formate (schwache version)
-        //return email != null && email.matches("^[\\\\w\\\\.-]+@[\\\\w\\\\.-]+\\\\.[a-zA-Z]{2,}$");
+    // die validierung und das aktualisierung des Labels kann ausgelagert werden
+    public static boolean installEmailValidation(JTextComponent field, JLabel errorLabel) {
         Runnable validate = () -> {
             String text = field.getText();
-            if (text.isEmpty() || text.isBlank()) {
+            if (text.isBlank()) {
                 errorLabel.setText("* Required");
                 return;
             }
             try{
                 InternetAddress emailAddr = new InternetAddress(text);
+                // überprüft die adresse nicht zuverlässig
                 emailAddr.validate();
                 errorLabel.setText("");
             } catch (AddressException ex) {
@@ -50,8 +56,8 @@ public class FieldValidator {
             }
         };
         runListeners(validate, field);
+        return isValidEmail(field);
     }
-
 
     public static void runListeners(Runnable validate, JTextComponent field) {
         field.addFocusListener(new FocusAdapter(){
