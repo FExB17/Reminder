@@ -82,7 +82,7 @@ public class ReminderBoxPanel extends JPanel {
      * und ändert den Text des Buttons auf "Stop"
      */
     public void updateToActive() {
-        statusLabel.setText("Active");
+        statusLabel.setText("ACTIVE");
         actionBtn.setText("Stop");
     }
 
@@ -91,9 +91,10 @@ public class ReminderBoxPanel extends JPanel {
      * und ändert den Text des Buttons auf "Start"
      */
     public void updateToStopped() {
-        statusLabel.setText("Stopped");
+        statusLabel.setText("STOPPED");
         actionBtn.setText("Start");
     }
+
     public Reminder getReminder() {
         return reminder;
     }

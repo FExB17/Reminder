@@ -39,6 +39,7 @@ public class MailScheduler {
             System.out.println("Scheduler stopped");
         }
     }
+
     public static void stopAll() {
         for (UUID id : new ArrayList<>(schedulerMap.keySet())) {
             stop(id);

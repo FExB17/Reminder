@@ -98,4 +98,12 @@ public class ReminderListPanel extends JPanel {
         return null;
 }
 
+    public void updateAllToStopped() {
+        for (Component component : listContainer.getComponents()) {
+            if (component instanceof ReminderBoxPanel box) {
+                box.updateToStopped();
+            }
+        }
+    }
+
 }

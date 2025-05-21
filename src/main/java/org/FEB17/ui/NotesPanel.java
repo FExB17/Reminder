@@ -15,20 +15,21 @@ public class NotesPanel extends JPanel{
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton sortBtn = new JButton("Sort");
+        sortBtn.setFocusable(false);
         topPanel.add(sortBtn);
         this.add(topPanel, BorderLayout.NORTH);
 
         JScrollPane scrollPane = new JScrollPane(notesContainer);
         this.add((scrollPane), BorderLayout.CENTER);
 
-        JButton stopAll = new JButton("Stopp All");
-        JButton startAll = new JButton("Start All");
-        JButton deleteAll = new JButton("Delete All");
+        JButton stopAllBtn = new JButton("Stopp All");
+        JButton startAllBtn = new JButton("Start All");
+        JButton deleteAllBtn = new JButton("Delete All");
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(startAll);
-        buttonPanel.add(stopAll);
-        buttonPanel.add(deleteAll);
+        buttonPanel.add(startAllBtn);
+        buttonPanel.add(stopAllBtn);
+        buttonPanel.add(deleteAllBtn);
 
         Note note = new Note("Test note 1");
         NoteBox box = new NoteBox(note);
@@ -38,5 +39,7 @@ public class NotesPanel extends JPanel{
         notesContainer.add(box2);
 
         this.add(buttonPanel, BorderLayout.SOUTH);
+
+
     }
 }

@@ -70,6 +70,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     
     public void stopAllReminders() {
         manager.stopAllReminders();
+        listPanel.updateAllToStopped();
     }
     
     public void deleteReminder(UUID id){
