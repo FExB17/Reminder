@@ -25,6 +25,8 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
     this.listPanel = listPanel;
     this.formPanel = formPanel;
     this.listPanel.setController(this);
+    this.formPanel.setController(this);
+
 }
 
     public void toggleReminder(UUID id) {

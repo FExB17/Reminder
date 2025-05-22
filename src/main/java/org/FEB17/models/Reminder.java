@@ -11,10 +11,6 @@ public class Reminder {
     private final UUID id;
     private final long createdAt;
 
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
     public Reminder(MailData data, int interval) {
         this.id = UUID.randomUUID();
         this.recipient = data.to();
@@ -33,6 +29,9 @@ public class Reminder {
     public Reminder() {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
+    }
+    public long getCreatedAt() {
+        return createdAt;
     }
 
     public String getRecipient() {

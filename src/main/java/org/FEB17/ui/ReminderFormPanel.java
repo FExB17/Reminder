@@ -22,13 +22,14 @@ public class ReminderFormPanel extends JPanel {
     private final JSpinner intervalSpinner;
     private final JLabel errorRecipient, errorSubject, errorMessage;
     private final JLabel statusLabel;
+    private ReminderController controller;
 
 /**
  * Erstellt ein neues ReminderFormPanel.
  * Initialisiert das Formular zur Eingabe und Verwaltung von Erinnerungs-E-Mails.
  * @param controllerSupplier Supplier, der einen ReminderController liefert
  */
-    public ReminderFormPanel(Supplier<ReminderController> controllerSupplier) {
+    public ReminderFormPanel() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Recipient
@@ -92,14 +93,14 @@ public class ReminderFormPanel extends JPanel {
                     getInterval()
             );
             if (valid) {
-                controllerSupplier.get().createReminder(data, getInterval());
+                controller.createReminder(data, getInterval());
                 statusLabel.setText("Reminder created. Every " + getInterval() + " minutes.");
             }
         });
 
 
         stopAllBtn.addActionListener(e -> {
-            controllerSupplier.get().stopAllReminders();
+            controller.stopAllReminders();
             statusLabel.setText("All reminders stopped.");
         });
     }
@@ -121,5 +122,8 @@ public class ReminderFormPanel extends JPanel {
         subject.setText(reminder.getSubject());
         messageArea.setText(reminder.getBody());
         intervalSpinner.setValue(reminder.getInterval());
+    }
+    public void setController(ReminderController controller) {
+        this.controller = controller;
     }
 }

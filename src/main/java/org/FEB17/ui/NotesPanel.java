@@ -1,16 +1,19 @@
 package org.FEB17.ui;
 
+import org.FEB17.controller.NotesController;
 import org.FEB17.models.Note;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class NotesPanel extends JPanel{
+    JPanel notesContainer;
+    NotesController controller;
 
     public NotesPanel() {
 
         this.setLayout(new BorderLayout());
-        JPanel notesContainer = new JPanel();
+        notesContainer = new JPanel();
         notesContainer.setLayout(new BoxLayout(notesContainer, BoxLayout.Y_AXIS));
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -31,15 +34,18 @@ public class NotesPanel extends JPanel{
         buttonPanel.add(stopAllBtn);
         buttonPanel.add(deleteAllBtn);
 
-        Note note = new Note("Test note 1");
-        NoteBox box = new NoteBox(note);
-        notesContainer.add(box);
-        Note note2 = new Note("Test note 2");
-        NoteBox box2 = new NoteBox(note2);
-        notesContainer.add(box2);
-
         this.add(buttonPanel, BorderLayout.SOUTH);
 
 
+    }
+    public void setController(NotesController controller) {
+        this.controller = controller;
+    }
+
+    public void addNote(Note note) {
+        NoteBox noteBox = new NoteBox(note);
+        notesContainer.add(noteBox, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
     }
 }
