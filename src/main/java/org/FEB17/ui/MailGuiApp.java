@@ -39,7 +39,8 @@ public class MailGuiApp {
         NotesManager notesManager = new NotesManager();
         NotesForm notesForm = new NotesForm();
         NotesPanel notesPanel = new NotesPanel();
-        NotesController notesController = new NotesController(notesManager, notesForm, notesPanel);
+
+        NotesController notesController = new NotesController(notesManager, notesForm, notesPanel); // erstmal, damit kein error kommt
 
         JSplitPane splitPaneDesktop = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, notesForm, notesPanel);
         splitPaneDesktop.setDividerLocation(300);

@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 public class NoteScheduler {
 
 
-    private static Map<UUID, ScheduledExecutorService> schedulers = new HashMap<>();
-    private static Logger logger = Logger.getLogger(NoteScheduler.class.getName());
+    private final static Map<UUID, ScheduledExecutorService> schedulers = new HashMap<>();
+    private final static Logger logger = Logger.getLogger(NoteScheduler.class.getName());
 
     public static void scheduleNote(Note note) {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -23,6 +23,7 @@ public class NoteScheduler {
         Runnable command = () -> showLinuxNotification(note);
         scheduledExecutorService.scheduleAtFixedRate(command,0, interval, TimeUnit.MINUTES);
         schedulers.put(note.getId(),scheduledExecutorService);
+        logger.info("Scheduler " + note.getId() + " has been started");
     }
 
     private static void showLinuxNotification(Note note) {
@@ -33,4 +34,8 @@ public class NoteScheduler {
         }
     }
 
+    public static void stopScheduler(UUID id) {
+        schedulers.remove(id).shutdown();
+        logger.info("Scheduler " + id + " has been shut down");
+    }
 }

@@ -5,6 +5,7 @@ import org.FEB17.models.Note;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.UUID;
 
 public class NotesPanel extends JPanel{
     JPanel notesContainer;
@@ -42,10 +43,26 @@ public class NotesPanel extends JPanel{
         this.controller = controller;
     }
 
-    public void addNote(Note note) {
-        NoteBox noteBox = new NoteBox(note);
+    public void addNoteBox(Note note) {
+        NoteBox noteBox = new NoteBox(note,controller);
         notesContainer.add(noteBox, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
+    }
+
+    public void removeNoteBox(UUID id) {
+        notesContainer.remove(getNoteBox(id));
+        this.revalidate();
+        this.repaint();
+    }
+
+    public NoteBox getNoteBox(UUID id) {
+        for (Component component : notesContainer.getComponents()){
+            if (component instanceof NoteBox box){
+                if (box.getNote().getId().equals(id))
+                    return box;
+            }
+        }
+        return null;
     }
 }

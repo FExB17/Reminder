@@ -17,12 +17,16 @@ public class NotesManager {
     public void setController(NotesController controller) {
         this.controller = controller;
     }
+
     public Note createNote(NoteData noteData) {
         Note note = new Note(noteData, noteData.interval());
         notes.put(note.getId(), noteData);
         NoteScheduler.scheduleNote(note);
-
         return note;
     }
 
+    public void deleteNote(UUID id) {
+        notes.remove(id);
+        NoteScheduler.stopScheduler(id);
+    }
 }

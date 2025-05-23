@@ -24,7 +24,7 @@ public class NotesForm extends JPanel {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 
-        SpinnerNumberModel model = new SpinnerNumberModel(30, 30, null, 1);
+        SpinnerNumberModel model = new SpinnerNumberModel(30, 1, null, 5);
         JSpinner spinner = new JSpinner(model);
         spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         bottomPanel.add(spinner);
