@@ -16,16 +16,18 @@ import java.util.logging.Logger;
 
 public class ReminderStorage {
 
-    private static final Path path = Paths.get(System.getProperty("user.home"), "reminders.json");
+    private static final Path path = Paths.get(System.getProperty("user.home"),"reminderApp", "reminders.json");
     static Logger logger = Logger.getLogger(ReminderStorage.class.getName());
 
     public static void saveReminders(Collection<Reminder> reminders) {
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(reminders);
         try{
-           Files.write(path, json.getBytes());
+            Files.createDirectories(path.getParent());
+            Files.write(path, json.getBytes());
        }catch(IOException e){
-           logger.severe(e.getMessage());
+            logger.severe(e.getMessage());
         }
     }
 

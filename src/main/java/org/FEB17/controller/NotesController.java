@@ -3,6 +3,7 @@ package org.FEB17.controller;
 import org.FEB17.desktop.NoteData;
 import org.FEB17.manager.NotesManager;
 import org.FEB17.models.Note;
+import org.FEB17.models.Status;
 import org.FEB17.ui.NotesForm;
 import org.FEB17.ui.NotesPanel;
 
@@ -33,16 +34,57 @@ public class NotesController {
     public void addToView(Note note) {
         notesPanel.addNoteBox(note);
     }
+
     public void removeFromView(UUID id) {
         notesPanel.removeNoteBox(id);
     }
 
-
     public void deleteNote(UUID id) {
-        // delete from manager
         manager.deleteNote(id);
-
-        // delete from view
         removeFromView(id);
+    }
+
+    public void renderAllNotes(){
+        manager.loadFromDisk();
+        manager.notes.values().forEach(this::addToView);
+        manager.startAllActiveNotes();
+    }
+
+    public void stopNote(UUID id){
+        manager.stopNote(id);
+        notesPanel.updateViewToStopped(id);
+    }
+
+    public void startNote(UUID id){
+        manager.startNote(id);
+        notesPanel.updateViewToActive(id);
+            }
+
+    public void toggleNote(UUID id) {
+        Note note = manager.notes.get(id);
+        if (note.getStatus().equals(Status.ACTIVE)) {
+            stopNote(id);
+            note.setStatus(Status.STOPPED);
+            notesPanel.updateViewToStopped(id);
+        } else {
+            startNote(id);
+            note.setStatus(Status.ACTIVE);
+            notesPanel.updateViewToActive(id);
+        }
+    }
+
+    public void stopAllNotes() {
+        manager.stopAllNotes();
+        manager.getAllNotes().forEach(note -> notesPanel.updateViewToStopped(note.getId()));
+    }
+
+    public void startAllNotes() {
+        manager.startAllNotes();
+        manager.getAllNotes().forEach(note -> notesPanel.updateViewToActive(note.getId()));
+    }
+
+    public void deleteAllNotes() {
+        manager.deleteAllNotes();
+        notesPanel.removeAllNoteBoxes();
     }
 }

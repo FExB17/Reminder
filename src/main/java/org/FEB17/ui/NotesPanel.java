@@ -37,8 +37,21 @@ public class NotesPanel extends JPanel{
 
         this.add(buttonPanel, BorderLayout.SOUTH);
 
+        stopAllBtn.addActionListener(e ->
+            controller.stopAllNotes()
+        );
+
+        startAllBtn.addActionListener(e ->
+            controller.startAllNotes()
+        );
+
+        deleteAllBtn.addActionListener(e ->
+            controller.deleteAllNotes()
+        );
+
 
     }
+
     public void setController(NotesController controller) {
         this.controller = controller;
     }
@@ -56,6 +69,12 @@ public class NotesPanel extends JPanel{
         this.repaint();
     }
 
+    public void removeAllNoteBoxes(){
+        notesContainer.removeAll();
+        this.revalidate();
+        this.repaint();
+    }
+
     public NoteBox getNoteBox(UUID id) {
         for (Component component : notesContainer.getComponents()){
             if (component instanceof NoteBox box){
@@ -64,5 +83,17 @@ public class NotesPanel extends JPanel{
             }
         }
         return null;
+    }
+
+    public void updateViewToStopped(UUID id) {
+        getNoteBox(id).updateToStopped();
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void updateViewToActive(UUID id) {
+        getNoteBox(id).updateToActive();
+        this.revalidate();
+        this.repaint();
     }
 }

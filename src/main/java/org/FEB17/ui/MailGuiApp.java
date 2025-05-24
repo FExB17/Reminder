@@ -4,6 +4,7 @@ import org.FEB17.controller.NotesController;
 import org.FEB17.controller.ReminderController;
 import org.FEB17.manager.NotesManager;
 import org.FEB17.manager.ReminderManager;
+import org.FEB17.persistence.NoteStorage;
 import org.FEB17.persistence.ReminderStorage;
 import org.FEB17.utils.SettingsAccess;
 
@@ -21,26 +22,23 @@ public class MailGuiApp {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
 
-        /**
-         * Ein Array als Holder für den ReminderController, um den Zugriff innerhalb von Lambda-Ausdrücken zu ermöglichen.
-         * Da lokale Variablen in Lambdas final oder effektiv final sein müssen, wird ein Array mit einem Element verwendet,
-         * um den Controller nachträglich zu setzen und darauf zugreifen zu können.
-         */
         ReminderManager manager = new ReminderManager();
+        NotesManager notesManager = new NotesManager();
         manager.loadFromDisk();
         ReminderFormPanel formPanel = new ReminderFormPanel();
         ReminderListPanel listPanel = new ReminderListPanel();
         ReminderController reminderController = new ReminderController(manager, listPanel, formPanel);
         reminderController.renderSortedReminders(Boolean.parseBoolean(SettingsAccess.getProperty("isAscending")));
 
+
         JSplitPane splitPaneEmail = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);
         splitPaneEmail.setDividerLocation(300);
 
-        NotesManager notesManager = new NotesManager();
         NotesForm notesForm = new NotesForm();
         NotesPanel notesPanel = new NotesPanel();
-
-        NotesController notesController = new NotesController(notesManager, notesForm, notesPanel); // erstmal, damit kein error kommt
+        notesManager.loadFromDisk();
+        NotesController notesController = new NotesController(notesManager, notesForm, notesPanel);
+        notesController.renderAllNotes();
 
         JSplitPane splitPaneDesktop = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, notesForm, notesPanel);
         splitPaneDesktop.setDividerLocation(300);
@@ -56,6 +54,7 @@ public class MailGuiApp {
             @Override
             public void windowClosing(WindowEvent e){
                 ReminderStorage.saveReminders(manager.getAllReminder());
+                NoteStorage.saveNotes(notesManager.getAllNotes());
                 frame.dispose();
                 System.exit(0);
             }

@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Note {
     private final UUID id;
-    private final LocalDateTime date;
+    private final String createdAt;
     private String content;
     private Status status;
     private int interval;
@@ -17,9 +17,15 @@ public class Note {
     public Note(NoteData data, int interval) {
         this.content = data.content();
         this.id = UUID.randomUUID();
-        this.date = LocalDateTime.now();
+        this.createdAt = LocalDateTime.parse(LocalDateTime.now().toString()).toString();
         this.status = Status.ACTIVE;
         this.interval = interval;
+    }
+
+    @SuppressWarnings("unused")
+    public Note(){
+        this.id = UUID.randomUUID();
+        this.createdAt = LocalDateTime.parse(LocalDateTime.now().toString()).toString();
     }
 
     public long getInterval() {
@@ -38,12 +44,8 @@ public class Note {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
     public Status getStatus() {
@@ -52,5 +54,11 @@ public class Note {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+    public void start(){
+        this.status = Status.ACTIVE;
+    }
+    public  void stop(){
+        this.status = Status.STOPPED;
     }
 }

@@ -35,7 +35,13 @@ public class NoteScheduler {
     }
 
     public static void stopScheduler(UUID id) {
-        schedulers.remove(id).shutdown();
-        logger.info("Scheduler " + id + " has been shut down");
+        if (schedulers.get(id) != null && !schedulers.get(id).isShutdown()){
+            schedulers.remove(id).shutdown();
+            logger.info("Scheduler " + id + " has been shut down");
+        }
+    }
+
+    public static void startScheduler(Note note) {
+        scheduleNote(note);
     }
 }
