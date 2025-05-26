@@ -6,13 +6,19 @@ import org.FEB17.models.Status;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class NoteBox extends JPanel {
     private final Note note;
     private final JButton actionBtn;
     private final JLabel statusLabel;
+    private final NotesController controller;
 
     public NoteBox(Note note, NotesController controller) {
+        this.controller = controller;
         this.note = note;
         this.setLayout( new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -26,14 +32,21 @@ public class NoteBox extends JPanel {
         contentArea.setEditable(false);
         contentArea.setBackground(null);
         contentArea.setText(note.getContent());
-
-
         this.add(contentArea);
+
+
         JTextArea infoArea = new JTextArea();
+        String startedAt = note.getStartedAt();
+        String started = (startedAt != null && !startedAt.isEmpty())
+                ? startedAt.substring(11,19)
+                : "Stopped";
+
         infoArea.setText(
-                "\nStarted at: " + (note.getCreatedAt()).substring(11,19)+
+                "\nCreated at: " + (note.getCreatedAt()).substring(0,19)+
+                "\nStarted at: " + started +
                 "\tInterval: " + note.getInterval() + " Minutes"
         );
+
         infoArea.setBackground(null);
         infoArea.setEditable(false);
 
@@ -54,7 +67,17 @@ public class NoteBox extends JPanel {
 
         actionBtn.addActionListener(e ->controller.toggleNote(note.getId()));
 
+        statusLabel.addMouseListener(fillFormListener);
+        contentArea.addMouseListener(fillFormListener);
+        infoArea.addMouseListener(fillFormListener);
     }
+    MouseListener fillFormListener = new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e){
+            controller.fillForm(note);
+        }
+    };
+
 
     public Note getNote() {
         return note;
@@ -63,11 +86,15 @@ public class NoteBox extends JPanel {
     public void updateToActive(){
         statusLabel.setText(Status.ACTIVE.toString());
         actionBtn.setText("Stop");
+        note.setStartedAt();
     }
 
     public void updateToStopped() {
         statusLabel.setText(Status.STOPPED.toString());
         actionBtn.setText("Start");
+        note.setStartedAt("");
     }
+
+
 
 }

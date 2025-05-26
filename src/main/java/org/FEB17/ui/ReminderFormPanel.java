@@ -27,7 +27,6 @@ public class ReminderFormPanel extends JPanel {
 /**
  * Erstellt ein neues ReminderFormPanel.
  * Initialisiert das Formular zur Eingabe und Verwaltung von Erinnerungs-E-Mails.
- * @param controllerSupplier Supplier, der einen ReminderController liefert
  */
     public ReminderFormPanel() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -123,6 +122,7 @@ public class ReminderFormPanel extends JPanel {
         messageArea.setText(reminder.getBody());
         intervalSpinner.setValue(reminder.getInterval());
     }
+
     public void setController(ReminderController controller) {
         this.controller = controller;
     }

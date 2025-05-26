@@ -2,6 +2,7 @@ package org.FEB17.ui;
 
 import org.FEB17.controller.NotesController;
 import org.FEB17.models.Note;
+import org.FEB17.utils.SettingsAccess;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +11,7 @@ import java.util.UUID;
 public class NotesPanel extends JPanel{
     JPanel notesContainer;
     NotesController controller;
+    private boolean ascending = Boolean.parseBoolean(SettingsAccess.getProperty("noteIsAscending"));
 
     public NotesPanel() {
 
@@ -18,7 +20,7 @@ public class NotesPanel extends JPanel{
         notesContainer.setLayout(new BoxLayout(notesContainer, BoxLayout.Y_AXIS));
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton sortBtn = new JButton("Sort");
+        JButton sortBtn = new JButton(ascending ? "Sort ↑" : "Sort ↓");
         sortBtn.setFocusable(false);
         topPanel.add(sortBtn);
         this.add(topPanel, BorderLayout.NORTH);
@@ -37,6 +39,14 @@ public class NotesPanel extends JPanel{
 
         this.add(buttonPanel, BorderLayout.SOUTH);
 
+        sortBtn.addActionListener(e ->   {
+            ascending = !ascending;
+            sortBtn.setText(ascending ? "Sort ↑" : "Sort ↓");
+            controller.renderSortedNotes(ascending);
+
+            SettingsAccess.setProperty("noteIsAscending", String.valueOf(ascending));
+        });
+
         stopAllBtn.addActionListener(e ->
             controller.stopAllNotes()
         );
@@ -48,8 +58,6 @@ public class NotesPanel extends JPanel{
         deleteAllBtn.addActionListener(e ->
             controller.deleteAllNotes()
         );
-
-
     }
 
     public void setController(NotesController controller) {
@@ -95,5 +103,9 @@ public class NotesPanel extends JPanel{
         getNoteBox(id).updateToActive();
         this.revalidate();
         this.repaint();
+    }
+
+    public boolean getAscending(){
+        return ascending;
     }
 }

@@ -28,7 +28,7 @@ public class MailGuiApp {
         ReminderFormPanel formPanel = new ReminderFormPanel();
         ReminderListPanel listPanel = new ReminderListPanel();
         ReminderController reminderController = new ReminderController(manager, listPanel, formPanel);
-        reminderController.renderSortedReminders(Boolean.parseBoolean(SettingsAccess.getProperty("isAscending")));
+        reminderController.renderSortedReminders(Boolean.parseBoolean(SettingsAccess.getProperty("reminderIsAscending")));
 
 
         JSplitPane splitPaneEmail = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, listPanel);

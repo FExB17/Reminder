@@ -27,12 +27,8 @@ public class NotesController {
 
     public void createNote(NoteData noteData) {
         Note note = manager.createNote(noteData);
-        addToView(note);
-
-    }
-
-    public void addToView(Note note) {
         notesPanel.addNoteBox(note);
+
     }
 
     public void removeFromView(UUID id) {
@@ -44,9 +40,10 @@ public class NotesController {
         removeFromView(id);
     }
 
+    // initialisiert die Liste der Notizen und startet alle aktiven Notizen und sortiert sie
     public void renderAllNotes(){
         manager.loadFromDisk();
-        manager.notes.values().forEach(this::addToView);
+        renderSortedNotes(notesPanel.getAscending());
         manager.startAllActiveNotes();
     }
 
@@ -86,5 +83,14 @@ public class NotesController {
     public void deleteAllNotes() {
         manager.deleteAllNotes();
         notesPanel.removeAllNoteBoxes();
+    }
+
+    public void fillForm(Note note) {
+        notesForm.fillForm(note);
+    }
+
+    public void renderSortedNotes(boolean ascending) {
+        notesPanel.removeAllNoteBoxes();
+        manager.getSortedByCreatedAt(ascending).forEach(notesPanel::addNoteBox);
     }
 }

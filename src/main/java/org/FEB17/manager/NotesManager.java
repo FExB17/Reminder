@@ -19,6 +19,7 @@ public class NotesManager {
 
     public Note createNote(NoteData noteData) {
         Note note = new Note(noteData, noteData.interval());
+        note.setStartedAt();
         notes.put(note.getId(), note);
         NoteScheduler.scheduleNote(note);
         NoteStorage.saveNotes(notes.values());
@@ -74,7 +75,16 @@ public class NotesManager {
             }
         });
     }
+
     public void deleteAllNotes(){
         new ArrayList<>(getAllNotes()).forEach(note -> deleteNote(note.getId()));
+    }
+
+    public List<Note> getSortedByCreatedAt(boolean ascending) {
+        Comparator<Note> comparator = Comparator.comparing(Note::getCreatedAt);
+        if (!ascending){
+            comparator = comparator.reversed();
+        }
+        return notes.values().stream().sorted(comparator).toList();
     }
 }

@@ -22,7 +22,7 @@ public class ReminderListPanel extends JPanel {
      * `ascending` gibt an, ob die Liste aufsteigend oder absteigend sortiert ist.
      * wird gelesen aus den Einstellungen
      */
-    private boolean ascending = Boolean.parseBoolean(SettingsAccess.getProperty("isAscending"));
+    private boolean ascending = Boolean.parseBoolean(SettingsAccess.getProperty("reminderIsAscending"));
 
     public ReminderListPanel() {
         this.setLayout(new BorderLayout());
@@ -51,7 +51,7 @@ public class ReminderListPanel extends JPanel {
             ascending = !ascending;
             sortBtn.setText(ascending ? "Sort ↑" : "Sort ↓");
             controller.sortViewByCreatedAt(ascending);
-            SettingsAccess.setProperty("isAscending", String.valueOf(ascending));
+            SettingsAccess.setProperty("reminderIsAscending", String.valueOf(ascending));
         });
     }
 

@@ -21,7 +21,7 @@ public class NoteScheduler {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         long interval = note.getInterval();
         Runnable command = () -> showLinuxNotification(note);
-        scheduledExecutorService.scheduleAtFixedRate(command,0, interval, TimeUnit.MINUTES);
+        scheduledExecutorService.scheduleAtFixedRate(command,interval, interval, TimeUnit.MINUTES);
         schedulers.put(note.getId(),scheduledExecutorService);
         logger.info("Scheduler " + note.getId() + " has been started");
     }
