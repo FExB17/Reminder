@@ -61,11 +61,11 @@ public class NotesController {
         Note note = manager.notes.get(id);
         if (note.getStatus().equals(Status.ACTIVE)) {
             stopNote(id);
-            note.setStatus(Status.STOPPED);
+            note.stop();
             notesPanel.updateViewToStopped(id);
         } else {
             startNote(id);
-            note.setStatus(Status.ACTIVE);
+            note.start();
             notesPanel.updateViewToActive(id);
         }
     }

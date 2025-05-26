@@ -46,8 +46,6 @@ public class Note {
         return content;
     }
 
-
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -60,18 +58,8 @@ public class Note {
         this.startedAt = LocalDateTime.parse((LocalDateTime.now().toString())).toString();
     }
 
-    public void setStartedAt(String startedAt) {
-        this.startedAt  = startedAt;
-    }
-
-
-
     public Status getStatus() {
         return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public void start(){
@@ -81,6 +69,6 @@ public class Note {
 
     public  void stop(){
         this.status = Status.STOPPED;
-        startedAt = "";
+        startedAt = "-";
     }
 }

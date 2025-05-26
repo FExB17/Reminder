@@ -16,6 +16,7 @@ public class NoteBox extends JPanel {
     private final JButton actionBtn;
     private final JLabel statusLabel;
     private final NotesController controller;
+    private final JTextArea infoArea;
 
     public NoteBox(Note note, NotesController controller) {
         this.controller = controller;
@@ -35,20 +36,10 @@ public class NoteBox extends JPanel {
         this.add(contentArea);
 
 
-        JTextArea infoArea = new JTextArea();
-        String startedAt = note.getStartedAt();
-        String started = (startedAt != null && !startedAt.isEmpty())
-                ? startedAt.substring(11,19)
-                : "Stopped";
-
-        infoArea.setText(
-                "\nCreated at: " + (note.getCreatedAt()).substring(0,19)+
-                "\nStarted at: " + started +
-                "\tInterval: " + note.getInterval() + " Minutes"
-        );
-
+        infoArea = new JTextArea();
         infoArea.setBackground(null);
         infoArea.setEditable(false);
+        updateInfoArea();
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(infoArea, BorderLayout.WEST);
@@ -86,15 +77,28 @@ public class NoteBox extends JPanel {
     public void updateToActive(){
         statusLabel.setText(Status.ACTIVE.toString());
         actionBtn.setText("Stop");
-        note.setStartedAt();
+        updateInfoArea();
     }
 
     public void updateToStopped() {
         statusLabel.setText(Status.STOPPED.toString());
         actionBtn.setText("Start");
-        note.setStartedAt("");
+        updateInfoArea();
     }
 
+        //Die Formatierungen der InfoArea sind nicht optimal
+    public void updateInfoArea(){
+        String startedAt = note.getStartedAt();
+        String started = (!startedAt.equals("-") && !startedAt.isEmpty())
+                ? startedAt.substring(11,19)
+                : "-";
 
+        infoArea.setText(
+                "\nCreated at: "    + (note.getCreatedAt()).substring(0,19)+
+                "\nStarted at: "    + started +
+                "\tInterval: "      + note.getInterval() + " Minutes"
+        );
+
+    }
 
 }
