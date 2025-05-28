@@ -32,7 +32,7 @@ public class NoteScheduler {
         int retryDelayMs = 1000;
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                new ProcessBuilder("notif-send", note.getContent()).start();
+                new ProcessBuilder("notify-send", note.getContent()).start();
                 return;
             } catch (IOException e) {
                 logger.warning("Fehler beim Senden der Benachrichtigung (Versuch " + attempt + "): " + e.getMessage());

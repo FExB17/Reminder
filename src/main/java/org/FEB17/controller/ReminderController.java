@@ -90,7 +90,7 @@ public ReminderController(ReminderManager manager, ReminderListPanel listPanel, 
 
     }
 
-    // geeigneten Namen für die Methode finden
+
     public void renderSortedReminders(boolean ascending){
     List<Reminder> sorted = manager.getSortedByCreatedAt(ascending);
     listPanel.render(sorted,this);
